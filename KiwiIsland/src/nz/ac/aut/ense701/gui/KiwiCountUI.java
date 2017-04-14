@@ -170,39 +170,31 @@ public class KiwiCountUI
                 switch(KeyScan){
                     //↑ and W is moving North
                     case  KeyEvent.VK_UP:
-                        btnMoveNorth.doClick();
-                        stepCounter++;
+                        btnMoveNorth.doClick();                        
                         break;
                     case  KeyEvent.VK_W:
-                        btnMoveNorth.doClick();
-                        stepCounter++;
+                        btnMoveNorth.doClick();                        
                         break;
                     //↓ and S for South
                     case KeyEvent.VK_DOWN:
-                        btnMoveSouth.doClick();
-                        stepCounter++;
+                        btnMoveSouth.doClick();                        
                         break;
                     case KeyEvent.VK_S:
-                        btnMoveSouth.doClick();
-                        stepCounter++;
+                        btnMoveSouth.doClick();                        
                         break;
                     //← and A for West
                     case KeyEvent.VK_LEFT:
-                        btnMoveWest.doClick();
-                        stepCounter++;
+                        btnMoveWest.doClick();                        
                         break;
                     case KeyEvent.VK_A:
-                        btnMoveWest.doClick();
-                        stepCounter++;
+                        btnMoveWest.doClick();                        
                         break;
                     //→ and D for East
                     case KeyEvent.VK_RIGHT:
-                        btnMoveEast.doClick();
-                        stepCounter++;
+                        btnMoveEast.doClick();                        
                         break;
                     case  KeyEvent.VK_D:
-                        btnMoveEast.doClick();
-                        stepCounter++;
+                        btnMoveEast.doClick();                        
                         break;
                     //Space_Bar for Use,Collect and Count
                     case  KeyEvent.VK_SPACE:
@@ -645,18 +637,22 @@ public class KiwiCountUI
 
     private void btnMoveEastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveEastActionPerformed
         game.playerMove(MoveDirection.EAST);
+        stepCounter++;
     }//GEN-LAST:event_btnMoveEastActionPerformed
 
     private void btnMoveNorthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNorthActionPerformed
         game.playerMove(MoveDirection.NORTH);
+        stepCounter++;
     }//GEN-LAST:event_btnMoveNorthActionPerformed
 
     private void btnMoveSouthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveSouthActionPerformed
         game.playerMove(MoveDirection.SOUTH);
+        stepCounter++;
     }//GEN-LAST:event_btnMoveSouthActionPerformed
 
     private void btnMoveWestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveWestActionPerformed
         game.playerMove(MoveDirection.WEST);
+        stepCounter++;
     }//GEN-LAST:event_btnMoveWestActionPerformed
 
     private void btnCollectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCollectActionPerformed
