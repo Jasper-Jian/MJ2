@@ -2,6 +2,7 @@ package nz.ac.aut.ense701.gui;
 
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.GameEventListener;
@@ -12,11 +13,11 @@ import nz.ac.aut.ense701.gameModel.MoveDirection;
  * User interface form for Kiwi Island.
  * 
  * @author AS
- * @version July 2011
+ * @version Apirl 2017
  */
 
 public class KiwiCountUI 
-    extends javax.swing.JFrame 
+    extends javax.swing.JFrame
     implements GameEventListener
 {
 
@@ -31,6 +32,7 @@ public class KiwiCountUI
         setAsGameListener();
         initComponents();
         initIslandGrid();
+        CustomKeyListener();
         update();
     }
     
@@ -121,9 +123,98 @@ public class KiwiCountUI
         btnMoveNorth.setEnabled(game.isPlayerMovePossible(MoveDirection.NORTH));
         btnMoveEast.setEnabled( game.isPlayerMovePossible(MoveDirection.EAST));
         btnMoveSouth.setEnabled(game.isPlayerMovePossible(MoveDirection.SOUTH));
-        btnMoveWest.setEnabled( game.isPlayerMovePossible(MoveDirection.WEST));
+        btnMoveWest.setEnabled( game.isPlayerMovePossible(MoveDirection.WEST));   
     }
     
+    //Combine the KeyListener to different pannel
+    public void CustomKeyListener(){
+            setKeyListener(this);
+            pnlIsland.setFocusable(true);
+            
+             //Add space_bar key and X,C key listener for Use,collect, Drop and count 
+  	    setKeyListener(pnlIsland);
+  	    setKeyListener(btnCollect);
+  	    setKeyListener(btnCount);
+  	    setKeyListener(btnDrop);
+            setKeyListener(btnUse);
+            
+            //Add arrow key and ASWD key listener use for key movement 
+  	    setKeyListener(btnMoveEast);
+  	    setKeyListener(btnMoveNorth);
+  	    setKeyListener(btnMoveSouth);
+  	    setKeyListener(btnMoveWest);
+            
+            //Add the key listener in different panel to enable the listener ability
+  	    setKeyListener(listInventory);
+  	    setKeyListener(listObjects);                
+  	    setKeyListener(lblKiwisCounted);
+  	    setKeyListener(lblPredators);
+
+    }
+    //implement key event by using KeyListener
+    public void setKeyListener(Component component){   	
+    	component.addKeyListener(new java.awt.event.KeyListener(){
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int KeyScan = e.getKeyCode();
+                switch(KeyScan){
+                    //↑ and W is moving North
+                    case  KeyEvent.VK_UP:
+                        btnMoveNorth.doClick();
+                        break;
+                    case  KeyEvent.VK_W:
+                        btnMoveNorth.doClick();
+                        break;
+                    //↓ and S for South
+                    case KeyEvent.VK_DOWN:
+                        btnMoveSouth.doClick();
+                        break;
+                    case KeyEvent.VK_S:
+                        btnMoveSouth.doClick();
+                        break;
+                    //← and A for West
+                    case KeyEvent.VK_LEFT:
+                        btnMoveWest.doClick();
+                        break;
+                    case KeyEvent.VK_A:
+                        btnMoveWest.doClick();
+                        break;
+                    //→ and D for East
+                    case KeyEvent.VK_RIGHT:
+                        btnMoveEast.doClick();
+                        break;
+                    case  KeyEvent.VK_D:
+                        btnMoveEast.doClick();
+                        break;
+                    //Space_Bar for Use,Collect and Count
+                    case  KeyEvent.VK_SPACE:
+                        btnUse.doClick();
+                        btnCollect.doClick();
+                        btnCount.doClick();
+                        break;
+                    //C for Collect Item
+                    case KeyEvent.VK_C:
+                        btnCollect.doClick();
+                        break;
+                    //X for Drop Item
+                    case KeyEvent.VK_X:
+                        btnDrop.doClick();
+                        break;  
+                    //ESC key for quit the game
+                    case KeyEvent.VK_ESCAPE:
+                        dispose();
+                        break;  
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }        	
+        });   	
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
