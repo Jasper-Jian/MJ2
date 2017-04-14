@@ -20,7 +20,14 @@ public class KiwiCountUI
     extends javax.swing.JFrame
     implements GameEventListener
 {
-
+    private int stepCounter = 0;
+    public int getSC(){
+        return stepCounter;
+    }
+    public int setSC(int SC){
+        this.stepCounter = SC;
+        return stepCounter;
+    }
     /**
      * Creates a GUI for the KiwiIsland game.
      * @param game the game object to represent with this GUI.
@@ -52,6 +59,7 @@ public class KiwiCountUI
                     this, 
                     game.getLoseMessage(), "Game over!",
                     JOptionPane.INFORMATION_MESSAGE);
+            setSC(0);
             game.createNewGame();
         }
         else if ( game.getState() == GameState.WON )
@@ -60,6 +68,7 @@ public class KiwiCountUI
                     this, 
                     game.getWinMessage(), "Well Done!",
                     JOptionPane.INFORMATION_MESSAGE);
+            setSC(0);
             game.createNewGame();
         }
         else if (game.messageForPlayer())
@@ -104,7 +113,7 @@ public class KiwiCountUI
         //Update Kiwi and Predator information
         txtKiwisCounted.setText(Integer.toString(game.getKiwiCount()) );
         txtPredatorsLeft.setText(Integer.toString(game.getPredatorsRemaining()));
-        
+        jLabel1.setText(Integer.toString(stepCounter));
         // update inventory list
         listInventory.setListData(game.getPlayerInventory());
         listInventory.clearSelection();
@@ -151,6 +160,7 @@ public class KiwiCountUI
   	    setKeyListener(lblPredators);
 
     }
+    
     //implement key event by using KeyListener
     public void setKeyListener(Component component){   	
     	component.addKeyListener(new java.awt.event.KeyListener(){
@@ -161,30 +171,38 @@ public class KiwiCountUI
                     //↑ and W is moving North
                     case  KeyEvent.VK_UP:
                         btnMoveNorth.doClick();
+                        stepCounter++;
                         break;
                     case  KeyEvent.VK_W:
                         btnMoveNorth.doClick();
+                        stepCounter++;
                         break;
                     //↓ and S for South
                     case KeyEvent.VK_DOWN:
                         btnMoveSouth.doClick();
+                        stepCounter++;
                         break;
                     case KeyEvent.VK_S:
                         btnMoveSouth.doClick();
+                        stepCounter++;
                         break;
                     //← and A for West
                     case KeyEvent.VK_LEFT:
                         btnMoveWest.doClick();
+                        stepCounter++;
                         break;
                     case KeyEvent.VK_A:
                         btnMoveWest.doClick();
+                        stepCounter++;
                         break;
                     //→ and D for East
                     case KeyEvent.VK_RIGHT:
                         btnMoveEast.doClick();
+                        stepCounter++;
                         break;
                     case  KeyEvent.VK_D:
                         btnMoveEast.doClick();
+                        stepCounter++;
                         break;
                     //Space_Bar for Use,Collect and Count
                     case  KeyEvent.VK_SPACE:
@@ -242,6 +260,7 @@ public class KiwiCountUI
         lblKiwisCounted = new javax.swing.JLabel();
         txtKiwisCounted = new javax.swing.JLabel();
         txtPredatorsLeft = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         javax.swing.JPanel pnlMovement = new javax.swing.JPanel();
         btnMoveNorth = new javax.swing.JButton();
         btnMoveSouth = new javax.swing.JButton();
@@ -268,7 +287,7 @@ public class KiwiCountUI
         pnlIsland.setLayout(pnlIslandLayout);
         pnlIslandLayout.setHorizontalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
+            .addGap(0, 529, Short.MAX_VALUE)
         );
         pnlIslandLayout.setVerticalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -385,6 +404,12 @@ public class KiwiCountUI
         pnlPlayerData.add(txtPredatorsLeft, gridBagConstraints);
 
         pnlPlayer.add(pnlPlayerData, java.awt.BorderLayout.WEST);
+
+        jLabel1.setText("Step Count:");
+        jLabel1.setToolTipText("");
+        pnlPlayer.add(jLabel1, java.awt.BorderLayout.PAGE_START);
+        jLabel1.getAccessibleContext().setAccessibleName("0");
+        jLabel1.getAccessibleContext().setAccessibleParent(pnlPlayerData);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -702,6 +727,7 @@ public class KiwiCountUI
     private javax.swing.JButton btnMoveSouth;
     private javax.swing.JButton btnMoveWest;
     private javax.swing.JButton btnUse;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblKiwisCounted;
     private javax.swing.JLabel lblPredators;
     private javax.swing.JList listInventory;
