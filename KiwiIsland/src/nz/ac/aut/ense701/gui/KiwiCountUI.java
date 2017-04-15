@@ -8,6 +8,7 @@ import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.GameEventListener;
 import nz.ac.aut.ense701.gameModel.GameState;
 import nz.ac.aut.ense701.gameModel.MoveDirection;
+import nz.ac.aut.ense701.gameModel.Weather;
 
 /*
  * User interface form for Kiwi Island.
@@ -21,12 +22,20 @@ public class KiwiCountUI
     implements GameEventListener
 {
     private int stepCounter = 0;
+    private String weatherStr = "Sunny";
     public int getSC(){
         return stepCounter;
     }
     public int setSC(int SC){
         this.stepCounter = SC;
         return stepCounter;
+    }
+    //Weather changed
+    public void weatherChangeByStep(){
+        Weather weather = new Weather();
+        if(this.stepCounter%4==0){
+            weatherStr = weather.creatWeather();   
+        }
     }
     /**
      * Creates a GUI for the KiwiIsland game.
@@ -60,6 +69,8 @@ public class KiwiCountUI
                     game.getLoseMessage(), "Game over!",
                     JOptionPane.INFORMATION_MESSAGE);
             setSC(0);
+            //initalize the weather; the default weather is "Sunny"
+            this.weatherStr = "Sunny";
             game.createNewGame();
         }
         else if ( game.getState() == GameState.WON )
@@ -714,21 +725,25 @@ public class KiwiCountUI
     private void btnMoveEastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveEastActionPerformed
         game.playerMove(MoveDirection.EAST);
         stepCounter++;
+        this.weatherChangeByStep();
     }//GEN-LAST:event_btnMoveEastActionPerformed
 
     private void btnMoveNorthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNorthActionPerformed
         game.playerMove(MoveDirection.NORTH);
         stepCounter++;
+        this.weatherChangeByStep();
     }//GEN-LAST:event_btnMoveNorthActionPerformed
 
     private void btnMoveSouthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveSouthActionPerformed
         game.playerMove(MoveDirection.SOUTH);
         stepCounter++;
+        this.weatherChangeByStep();
     }//GEN-LAST:event_btnMoveSouthActionPerformed
 
     private void btnMoveWestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveWestActionPerformed
         game.playerMove(MoveDirection.WEST);
         stepCounter++;
+        this.weatherChangeByStep();
     }//GEN-LAST:event_btnMoveWestActionPerformed
 
     private void btnCollectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCollectActionPerformed
