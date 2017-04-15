@@ -252,7 +252,6 @@ public class KiwiCountUI
         lblKiwisCounted = new javax.swing.JLabel();
         txtKiwisCounted = new javax.swing.JLabel();
         txtPredatorsLeft = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         javax.swing.JPanel pnlMovement = new javax.swing.JPanel();
         btnMoveNorth = new javax.swing.JButton();
         btnMoveSouth = new javax.swing.JButton();
@@ -268,6 +267,12 @@ public class KiwiCountUI
         listObjects = new javax.swing.JList();
         btnCollect = new javax.swing.JButton();
         btnCount = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kiwi Count");
@@ -279,11 +284,11 @@ public class KiwiCountUI
         pnlIsland.setLayout(pnlIslandLayout);
         pnlIslandLayout.setHorizontalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 529, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         pnlIslandLayout.setVerticalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 618, Short.MAX_VALUE)
+            .addGap(0, 492, Short.MAX_VALUE)
         );
 
         pnlContent.add(pnlIsland, java.awt.BorderLayout.CENTER);
@@ -396,12 +401,6 @@ public class KiwiCountUI
         pnlPlayerData.add(txtPredatorsLeft, gridBagConstraints);
 
         pnlPlayer.add(pnlPlayerData, java.awt.BorderLayout.WEST);
-
-        jLabel1.setText("Step Count:");
-        jLabel1.setToolTipText("");
-        pnlPlayer.add(jLabel1, java.awt.BorderLayout.PAGE_START);
-        jLabel1.getAccessibleContext().setAccessibleName("0");
-        jLabel1.getAccessibleContext().setAccessibleParent(pnlPlayerData);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -630,6 +629,83 @@ public class KiwiCountUI
 
         pnlContent.add(pnlControls, java.awt.BorderLayout.EAST);
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel2.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel2.setText("Current Weather:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(163, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel2)
+                .addGap(0, 39, Short.MAX_VALUE))
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel3.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel3.setText("Step Counter:");
+
+        jLabel1.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
+        jLabel1.setText("0");
+        jLabel1.setToolTipText("");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(jLabel1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addContainerGap())
+        );
+
+        jLabel1.getAccessibleContext().setAccessibleParent(pnlPlayerData);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 395, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pnlContent.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+
         getContentPane().add(pnlContent, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -724,6 +800,11 @@ public class KiwiCountUI
     private javax.swing.JButton btnMoveWest;
     private javax.swing.JButton btnUse;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel lblKiwisCounted;
     private javax.swing.JLabel lblPredators;
     private javax.swing.JList listInventory;
