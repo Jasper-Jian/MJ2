@@ -1,12 +1,14 @@
 package nz.ac.aut.ense701.gameModel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * This is the class that knows the Kiwi Island game rules and state
@@ -49,7 +51,8 @@ public class Game
         totalKiwis = 0;
         predatorsTrapped = 0;
         kiwiCount = 0;
-        initialiseIslandFromFile("IslandData.txt");
+	//Initial the island data from a xml file
+        initialiseIslandFromFile("xml/IslandData.xml");
         drawIsland();
         state = GameState.PLAYING;
         winMessage = "";
@@ -704,141 +707,176 @@ public class Game
     }
 
     
-    /**
-     * Loads terrain and occupant data from a file.
+   /**
+     * Loads terrain and occupant data from a xml.
      * At this stage this method assumes that the data file is correct and just
      * throws an exception or ignores it if it is not.
      * 
-     * @param fileName file name of the data file
+     * @param xmlName xml name of the data file
      */
-    private void initialiseIslandFromFile(String fileName) 
+    private void initialiseIslandFromFile(String xmlName) 
     {
         try
         {
-            Scanner input = new Scanner(new File(fileName));
-            // make sure decimal numbers are read in the form "123.23"
-            input.useLocale(Locale.US);
-            input.useDelimiter("\\s*,\\s*");
-
-            // create the island
-            int numRows    = input.nextInt();
-            int numColumns = input.nextInt();
-            island = new Island(numRows, numColumns);
-
-            // read and setup the terrain
-            setUpTerrain(input);
-
-            // read and setup the player
-            setUpPlayer(input);
-
-            // read and setup the occupants
-            setUpOccupants(input);
-
-            input.close();
+            SAXReader reader = new SAXReader();
+            File file = new File(xmlName);
+            Document doc = reader.read(file);
+            Element root = doc.getRootElement();
+            Element islandE = root.element("island");
+            //Get the number of island's row
+            int rowNum = Integer.parseInt(islandE.element("numRows").getTextTrim());
+            //Get the column of island's column
+            int colNum = Integer.parseInt(islandE.element("numColumns").getTextTrim());
+            this.island = new Island(rowNum, colNum);
+            //Set up the player information
+            setUpPlayer(root);
+            //Set up the terrain for each grid
+            setUpTerrain(root);
+            //Set up the occupant for each grid
+            setUpOccupants(root);
         }
-        catch(FileNotFoundException e)
-        {
-            System.err.println("Unable to find data file '" + fileName + "'");
-        }
-        catch(IOException e)
-        {
-            System.err.println("Problem encountered processing file.");
+         catch (DocumentException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
      * Reads terrain data and creates the terrain.
      * 
-     * @param input data from the level file
+     * @param root data from the xml file
      */
-    private void setUpTerrain(Scanner input) 
+    private void setUpTerrain(Element root) 
     {
-        for ( int row = 0 ; row < island.getNumRows() ; row++ ) 
-        {
-            String terrainRow = input.next();
-            for ( int col = 0 ; col < terrainRow.length() ; col++ )
-            {
-                Position pos = new Position(island, row, col);
-                String   terrainString = terrainRow.substring(col, col+1);
-                Terrain  terrain = Terrain.getTerrainFromStringRepresentation(terrainString);
-                island.setTerrain(pos, terrain);
+            //Set the terrain for each grid suqare
+            //Get the terrain from xml file
+            String terrainStr = root.element("terrain").getTextTrim();
+            String[] terrainArr = terrainStr.split(",");
+            for(int row=0;row<terrainArr.length;row++){
+                String terrainRow = terrainArr[row];
+                for(int col=0;col<terrainArr.length-1;col++){
+                    Position pos = new Position(island, row, col);
+                    String   terrainString = terrainRow.trim().substring(col, col+1);
+                    Terrain terrain = Terrain.getTerrainFromStringRepresentation(terrainString);
+                    island.setTerrain(pos, terrain);
+                }
             }
-        }
     }
 
     /**
      * Reads player data and creates the player.
-     * @param input data from the level file
+     * @param root data from the xml file
      */
-    private void setUpPlayer(Scanner input) 
-    {
-        String playerName              = input.next();
-        int    playerPosRow            = input.nextInt();
-        int    playerPosCol            = input.nextInt();
-        double playerMaxStamina        = input.nextDouble();
-        double playerMaxBackpackWeight = input.nextDouble();
-        double playerMaxBackpackSize   = input.nextDouble();
-        
-        Position pos = new Position(island, playerPosRow, playerPosCol);
-        player = new Player(pos, playerName, 
-                playerMaxStamina, 
-                playerMaxBackpackWeight, playerMaxBackpackSize);
-        island.updatePlayerPosition(player);
+    
+    private void setUpPlayer(Element root) 
+    {   
+            //Get Player Informaiton
+            Element playerE = root.element("player");
+            //Get the name of player
+            String playerName = playerE.attributeValue("name");
+            //Get the player's initial position
+            //Get the row of the positon
+            int playerPosRow = Integer.parseInt(playerE.element("posRow").getTextTrim());
+            //Get the column of the position
+            int playerPosCol = Integer.parseInt(playerE.element("posCol").getTextTrim());
+            //Get the max statmina of the player
+            double playerMaxStamina = Double.parseDouble(playerE.element("maxStamina").getTextTrim());
+            //Get the max backpack weight of the player
+            double playerMaxBackpackWeight = Double.parseDouble(playerE.element("maxBackpackWeight").getTextTrim());
+            //Get the max backpack size of the player
+            double playerMaxBackpackSize = Double.parseDouble(playerE.element("maxBackpackSize").getTextTrim());
+
+             Position pos = new Position(island, playerPosRow, playerPosCol);
+             player = new Player(pos, playerName, playerMaxStamina, 
+             playerMaxBackpackWeight, playerMaxBackpackSize);
+             island.updatePlayerPosition(player);
     }
 
     /**
      * Creates occupants listed in the file and adds them to the island.
-     * @param input data from the level file
+     * @param root data from the xml file
      */
-    private void setUpOccupants(Scanner input) 
-    {
-        int numItems = input.nextInt();
-        for ( int i = 0 ; i < numItems ; i++ ) 
-        {
-            String occType  = input.next();
-            String occName  = input.next(); 
-            String occDesc  = input.next();
-            int    occRow   = input.nextInt();
-            int    occCol   = input.nextInt();
-            Position occPos = new Position(island, occRow, occCol);
-            Occupant occupant    = null;
+   
+    private void setUpOccupants(Element root) 
+    {     
+            Occupant occupant = null;
+            //Get the number of total items
+            int itemNum = Integer.parseInt(root.element("occupants").element("itemNum").getTextTrim());
+            System.out.println(itemNum);
+            String occupants = root.element("occupants").getTextTrim();
+            //Split the string according to the ";" symbol
+            String[] occArr = occupants.split(";");
+            for(int i=0;i<occArr.length;i++){
+                //Split the string according to the "," symbol
+                String[] tempArr = occArr[i].split(",");
+                for(int j=0;j<tempArr.length;j++){
+                        //If the occupant type is "T"
+                    if(tempArr[j].trim().equals("T")){
+                        String occName = tempArr[j+1].trim();
+                        String occDesc = tempArr[j+2].trim();
+                        int occRow = Integer.parseInt(tempArr[j+3].trim());
+                        int occCol = Integer.parseInt(tempArr[j+4].trim());
+                        Position occPos = new Position(island, occRow, occCol);
+                        double weight = Double.parseDouble(tempArr[j+5].trim());
+                        double size = Double.parseDouble(tempArr[j+6].trim());
+                        occupant = new Tool(occPos, occName, occDesc, weight, size);
+                        island.addOccupant(occPos, occupant);
+                    }   //If the occupant type is "E"
+                        else if(tempArr[j].trim().equals("E")){
+                        String occName = tempArr[j+1].trim();
+                        String occDesc = tempArr[j+2].trim();
+                        int occRow = Integer.parseInt(tempArr[j+3].trim());
+                        int occCol = Integer.parseInt(tempArr[j+4].trim());
+                        Position occPos = new Position(island, occRow, occCol);
+                        double weight = Double.parseDouble(tempArr[j+5].trim());
+                        double size = Double.parseDouble(tempArr[j+6].trim());
+                        double energy = Double.parseDouble(tempArr[j+7].trim());
+                        occupant = new Food(occPos, occName, occDesc, weight, size, energy);
+                        island.addOccupant(occPos, occupant);
+                    }   //If the occupant type is "H"
+                        else if(tempArr[j].trim().equals("H")){
+                        String occName = tempArr[j+1].trim();
+                        String occDesc = tempArr[j+2].trim();
+                        int occRow = Integer.parseInt(tempArr[j+3].trim());
+                        int occCol = Integer.parseInt(tempArr[j+4].trim());
+                        Position occPos = new Position(island, occRow, occCol);
+                        double impact = Double.parseDouble(tempArr[j+5].trim());
+                        occupant = new Hazard(occPos, occName, occDesc,impact);
+                        island.addOccupant(occPos, occupant);
+                    }   //If the occupant type is "K"
+                        else if(tempArr[j].trim().equals("K")){
+                        String occName = tempArr[j+1].trim();
+                        String occDesc = tempArr[j+2].trim();
+                        int occRow = Integer.parseInt(tempArr[j+3].trim());
+                        int occCol = Integer.parseInt(tempArr[j+4].trim());
+                        Position occPos = new Position(island, occRow, occCol);
+                        occupant = new Kiwi(occPos, occName, occDesc);
+                        island.addOccupant(occPos, occupant);
+                        totalKiwis++;
+                    }   //If the occupant type is "P"
+                        else if(tempArr[j].trim().equals("P")){
+                        String occName = tempArr[j+1].trim();
+                        String occDesc = tempArr[j+2].trim();
+                        int occRow = Integer.parseInt(tempArr[j+3].trim());
+                        int occCol = Integer.parseInt(tempArr[j+4].trim());
+                        Position occPos = new Position(island, occRow, occCol);
+                        occupant = new Predator(occPos, occName, occDesc);
+                        island.addOccupant(occPos, occupant);
+                        totalPredators++;
+                    }   //If the occupant type is "F"
+                        else if(tempArr[j].trim().equals("F")){
+                        String occName = tempArr[j+1].trim();
+                        String occDesc = tempArr[j+2].trim();
+                        int occRow = Integer.parseInt(tempArr[j+3].trim());
+                        int occCol = Integer.parseInt(tempArr[j+4].trim());
+                        Position occPos = new Position(island, occRow, occCol);
+                        occupant = new Fauna(occPos, occName, occDesc);
+                        island.addOccupant(occPos, occupant);
+                    }
+                    
+                }
+            }
 
-            if ( occType.equals("T") )
-            {
-                double weight = input.nextDouble();
-                double size   = input.nextDouble();
-                occupant = new Tool(occPos, occName, occDesc, weight, size);
-            }
-            else if ( occType.equals("E") )
-            {
-                double weight = input.nextDouble();
-                double size   = input.nextDouble();
-                double energy = input.nextDouble();
-                occupant = new Food(occPos, occName, occDesc, weight, size, energy);
-            }
-            else if ( occType.equals("H") )
-            {
-                double impact = input.nextDouble();
-                occupant = new Hazard(occPos, occName, occDesc,impact);
-            }
-            else if ( occType.equals("K") )
-            {
-                occupant = new Kiwi(occPos, occName, occDesc);
-                totalKiwis++;
-            }
-            else if ( occType.equals("P") )
-            {
-                occupant = new Predator(occPos, occName, occDesc);
-                totalPredators++;
-            }
-            else if ( occType.equals("F") )
-            {
-                occupant = new Fauna(occPos, occName, occDesc);
-            }
-            if ( occupant != null ) island.addOccupant(occPos, occupant);
-        }
     }    
-
 
     private Island island;
     private Player player;
@@ -848,9 +886,7 @@ public class Game
     private int totalKiwis;
     private int predatorsTrapped;
     private Set<GameEventListener> eventListeners;
-    
     private final double MIN_REQUIRED_CATCH = 0.8;
-        
     private String winMessage = "";
     private String loseMessage  = "";
     private String playerMessage  = "";   
