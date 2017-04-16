@@ -17,10 +17,10 @@ public class Weather {
     private static final Weather WEATHER = new Weather();
     private double difficulty;
     private String weatherStr = "Sunny";
-    private StepCounter stepCounter = StepCounter.getSingleTone();
+    private StepCounter stepCounter = StepCounter.getSingleTon();
     private Weather(){
     }
-    public static Weather getSingleTone(){
+    public static Weather getSingleTon(){
         return WEATHER;
     }
     public double getDifficulty() {
