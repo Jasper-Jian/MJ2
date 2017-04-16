@@ -23,7 +23,7 @@ public class Player
     private Set<Item> backpack;
     private final double    maxBackpackWeight;
     private final double    maxBackpackSize;   
-    
+    private Weather weather = Weather.getSingleTon();
     /**
      * Constructs a new player object.
      * 
@@ -105,10 +105,13 @@ public class Player
     {
         double staminaNeeded = MOVE_STAMINA;
         double load = getCurrentBackpackWeight() / maxBackpackWeight;
+        
         // Twice as much is needed when the backpack is full
         staminaNeeded *= (1.0 + load);
         // and even more when the terrain is difficult
-        staminaNeeded *= terrain.getDifficulty();
+        staminaNeeded *= (terrain.getDifficulty());
+        System.out.println("staminaNeeded"+staminaNeeded);
+        System.out.println("weatherDifficult"+weather.getDifficulty());
         return staminaNeeded;
     }
 
