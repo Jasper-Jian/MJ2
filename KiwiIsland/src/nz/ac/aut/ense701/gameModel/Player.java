@@ -108,10 +108,9 @@ public class Player
         
         // Twice as much is needed when the backpack is full
         staminaNeeded *= (1.0 + load);
-        // and even more when the terrain is difficult
+        // and even more when the terrain is difficult or the weather is difficult
         staminaNeeded *= (terrain.getDifficulty());
-        System.out.println("staminaNeeded"+staminaNeeded);
-        System.out.println("weatherDifficult"+weather.getDifficulty());
+        staminaNeeded += weather.getDifficulty();
         return staminaNeeded;
     }
 
