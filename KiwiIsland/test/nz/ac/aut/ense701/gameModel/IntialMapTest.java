@@ -30,7 +30,7 @@ public class IntialMapTest {
     public static void main(String[] args) throws DocumentException{
         Occupant occupant = null;
         SAXReader reader = new SAXReader();
-        File file = new File("xml/testXml.xml");
+        File file = new File("xml/IslandData.xml");
         Document doc = reader.read(file);
         Element root = doc.getRootElement();
         Element island = root.element("island");
