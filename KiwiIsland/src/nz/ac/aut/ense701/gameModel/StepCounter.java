@@ -8,8 +8,8 @@
 package nz.ac.aut.ense701.gameModel;
 
 /**
- *
- * @author Administrator
+ * StepCounter Class
+ * @author Minghao Yang
  */
 public class StepCounter {
     private int step;
@@ -19,12 +19,23 @@ public class StepCounter {
     public static StepCounter getSingleTon(){
         return SC;
     }
+   /**
+     * Set the step
+     * @param step 
+     */
     public void setStep(int step){
         this.step = step;
     }
+    /**
+     * Get the number of player moving
+     * @return 
+     */
     public int getStep(){
     	return this.step;
     }
+    /**
+     * Each player moves one step, the step counter plus one step
+     */
     public void addStep(){
         this.step++;
     }
