@@ -79,7 +79,7 @@ public class GridSquarePanel extends javax.swing.JPanel
         else
         {
             lblText.setText("");
-            lblText.setBackground(null);
+            lblText.setIcon(null);
             setBorder(normalBorder);
         }
     }
