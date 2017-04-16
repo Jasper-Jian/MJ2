@@ -110,7 +110,7 @@ public class Player
         staminaNeeded *= (1.0 + load);
         // and even more when the terrain is difficult or the weather is difficult
         staminaNeeded *= (terrain.getDifficulty());
-        staminaNeeded += weather.getDifficulty();
+        staminaNeeded += weather.getDifficulty()*0.2;
         return staminaNeeded;
     }
 
