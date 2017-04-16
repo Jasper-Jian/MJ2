@@ -10,8 +10,12 @@ package nz.ac.aut.ense701.gameModel;
 import java.util.Random;
 
 /**
- *
- * @author Administrator
+ * Weather Class
+ * @author Minghao Yang
+ * @version 1
+ * Using the singleton pattern to design the class;
+ * Whenever the player moves 4 steps the weather will change randomly.
+ * Different weather will return different difficulty.
  */
 public class Weather {
     private static final Weather WEATHER = new Weather();
@@ -23,12 +27,24 @@ public class Weather {
     public static Weather getSingleTon(){
         return WEATHER;
     }
+   /**
+     * Get the difficulty of the changed weather
+     * @return 
+     */
     public double getDifficulty() {
 		return difficulty;
 	}
+   /**
+     * Get the Weather String
+     * @return 
+     */
 	public String getWeatherStr() {
 		return weatherStr;
 	}
+       /**
+         * Set the weather
+         * @param weatherStr 
+         */
 	public void setWeatherStr(String weatherStr) {
 		this.weatherStr = weatherStr;
 	}
@@ -66,6 +82,10 @@ public class Weather {
 			return false;
 		return true;
 	}
+	/**
+         * Whenver the player moves 4 steps, the weather will change and get
+         * the difficulty according to the weather.
+         */
 	public void getWeatherChageStr(){
         if(stepCounter.getStep()%4==0){
             this.creatWeather();
@@ -84,7 +104,9 @@ public class Weather {
             this.difficulty = 3.0;
         }
     }
-    
+    /**
+     * Set different difficulty to different weather
+     */
     public void creatWeather(){
         Random rand = new Random();
         int weatherChange = rand.nextInt(4);
