@@ -66,22 +66,23 @@ public class Instruction extends javax.swing.JFrame {
         });
         jPanel1.add(jButton1);
         jButton1.setBounds(350, 600, 110, 23);
-
-        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\Kid\\Desktop\\11111111\\Instruction.jpg")); // NOI18N
+        
+        
+        jLabel4.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction.jpg")))); // NOI18N
         jPanel1.add(jLabel4);
         jLabel4.setBounds(50, 150, 360, 240);
-
-        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\Users\\Kid\\Desktop\\11111111\\Instruction3.jpg")); // NOI18N
+        
+        jLabel5.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction2.jpg")))); // NOI18N
         jLabel5.setText("jLabel5");
         jPanel1.add(jLabel5);
         jLabel5.setBounds(140, 440, 560, 111);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Kid\\Desktop\\11111111\\Instruction2.jpg")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction3.jpg")))); // NOI18N
         jLabel1.setText("jLabel1");
         jPanel1.add(jLabel1);
         jLabel1.setBounds(440, 150, 360, 240);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\Kid\\Desktop\\11111111\\InstructionBG.jpg")); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("InstructionBG.jpg")))); // NOI18N
         jLabel2.setText("jLabel2");
         jLabel2.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
         jLabel2.setMinimumSize(new java.awt.Dimension(224, 450));
