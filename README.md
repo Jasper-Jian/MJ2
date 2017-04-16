@@ -1,8 +1,5 @@
 # MJ
 ------------------------------------------------------------------------
-This is the project README file.
-------------------------------------------------------------------------
-
 PROJECT TITLE: Kiwi Island
 PURPOSE OF PROJECT: Programming Assignment
 VERSION or DATE: Version 2.0, 16/04/2017
