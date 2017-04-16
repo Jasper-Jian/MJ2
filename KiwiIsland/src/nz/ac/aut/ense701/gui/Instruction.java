@@ -72,12 +72,12 @@ public class Instruction extends javax.swing.JFrame {
         jPanel1.add(jLabel4);
         jLabel4.setBounds(50, 150, 360, 240);
         
-        jLabel5.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction2.jpg")))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction3.jpg")))); // NOI18N
         jLabel5.setText("jLabel5");
         jPanel1.add(jLabel5);
         jLabel5.setBounds(140, 440, 560, 111);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction3.jpg")))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(this.getToolkit().getImage(this.getClass().getResource("Instruction2.jpg")))); // NOI18N
         jLabel1.setText("jLabel1");
         jPanel1.add(jLabel1);
         jLabel1.setBounds(440, 150, 360, 240);
