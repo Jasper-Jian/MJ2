@@ -46,7 +46,7 @@ public class GridSquarePanel extends javax.swing.JPanel
         {
            case SAND     : icon = new ImageIcon("img/Sand.jpg");
             break;
-            case FOREST   : icon = new ImageIcon("img/Forest.jpg");
+            case FOREST   : icon = new ImageIcon("img/Froest.jpg");
             break;
             case WETLAND : icon = new ImageIcon("img/Wetland.jpg"); 
             break;
