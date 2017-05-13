@@ -35,7 +35,7 @@ and open the template in the editor.
     <occupants>
         <itemNum>38</itemNum>
     E,Sandwich,A nice and healthy sandwich, 2, 4, 2.0, 1.0, 50.0;
-    E,Muesli Bar,A juicy and nutricious muesli bar, 5, 4, 1.0, 1.0, 50.0;
+    E,Sandwich,A nice and healthy sandwich, 5, 4, 2.0, 1.0, 50.0;
     E,Apple,A juicy apple, 6, 7, 2.0, 3.0, 50.0;
     E,Orange Juice,A bottle of juice, 8, 2, 2.0, 3.0, 50.0;
     E,Mushroom,A mushroom and you can not judge whether it is toxic, 6, 1, 2.0, 1.0, 30.0;
@@ -45,7 +45,7 @@ and open the template in the editor.
     T,Screwdriver,A screwdriver that is useful for fixing traps, 5, 3, 0.5, 0.75;
     F,Oystercatcher,A variable oystercatcher sitting on sand, 0, 3;
     F,Crab,A scuttling crab, 4, 0;
-    F,Fernbird,A shy fernbird, 4, 6;
+    F,Stoat,A shy stoat, 4, 6;
     F,Heron,A white-faced heron, 6, 8;
     F,Robin,A black robin, 7, 3;
     F,Tui,A singing tui, 8, 8;
@@ -60,9 +60,8 @@ and open the template in the editor.
     K,Kiwi,A large brown kiwi,9,4;
     K,Kiwi,A large brown kiwi,9,6;
     P,Rat,A Norwegian rat,6,4;
-    P,Cat,A wild cat,0,7;
     P,Rat,A Norwegian rat,2,6;
-    P,Kiore,A pacific rat,3,4;
+    P,Rat,A pacific rat,3,4;
     P,Stoat,A brown and white stoat,4,1;
     P,Possum,A bushy tailed possum,5,2;
     P,Possum,A bushy tailed possum,9,7;
@@ -72,7 +71,8 @@ and open the template in the editor.
     H,Sunburn,Too much sun has given you bad sunburn and,5,0,0.3;
     H,Fall,Tripping on roots hurt your ankle and,1,4,0.5;
     H,Cliff,A fall down a small cliff,6,5,0.3;
-    H,Broken trap,Your predator trap has broken,7,6,0.0;    
+    H,Broken trap,Your predator trap has broken,7,6,0.0;  
+    H,Tornadoes,You will be in a new position because of the Tornadoes and,4,7,0.2;  
     </occupants>
         
     
