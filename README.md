@@ -2,15 +2,22 @@
 -----------------------------------------------------------------------
 PROJECT TITLE: Kiwi Island
 PURPOSE OF PROJECT: Programming Assignment
-VERSION or DATE: Version 2.0, 16/04/2017
+VERSION or DATE: Version 3.0, 14/05/2017
 AUTHORS: AS Mike, Jack, Zhipei, Manfei
 
-Version 2.0
+Version 3.0
 
 Feature added:
-Weather function added.
-Customize key added.
+Timer added,
+New Harzard added.
+New Food added,
+Environment UI updated,
+HP bar colour changing affect added.
 Ocupant UI added.
-Environment UI added.
 
-Data storege change to persistent data.
+In the Next Version feature we will add:
+Login,
+Register,
+Save Game,
+Load Game,
+Etc.....
