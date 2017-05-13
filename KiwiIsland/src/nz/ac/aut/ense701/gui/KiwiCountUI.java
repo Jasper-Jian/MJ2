@@ -63,12 +63,12 @@ public class KiwiCountUI
     @Override
     public void gameStateChanged()
     {
-        update();
-        //if the player's stamina is too low, user will hear the heart beat warning
         stepCounter.addStep();
         weather.getWeatherChageStr();
+        update();
+        //if the player's stamina is too low, user will hear the heart beat warning
         lowStaminaWarn();
-        //
+        //change the player's stamina color according to the level of the stamina
         changeStaminaColor();
         // check for "game over" or "game won"
         if ( game.getState() == GameState.LOST )
@@ -78,13 +78,11 @@ public class KiwiCountUI
                     game.getLoseMessage(), "Game over!",
                     JOptionPane.INFORMATION_MESSAGE);
             //initialize the step of stepcounter
-            stepCounter.setStep(0);
+            stepCounter.setStep(-1);
             //Return zero to the seconds jlabel
             seconds.setText("00m:00s");
             //Reset the timer
             timer.setProgramStart(System.currentTimeMillis());
-            //initalize the weather; the default weather is "Sunny"
-            weather.setWeatherStr("Sunny");
             game.createNewGame();
         }
         else if ( game.getState() == GameState.WON )
@@ -94,7 +92,7 @@ public class KiwiCountUI
                     game.getWinMessage(), "Well Done!",
                     JOptionPane.INFORMATION_MESSAGE);
             //initialize the step of stepcounter
-            stepCounter.setStep(0);
+            stepCounter.setStep(-1);
             //Return zero to the seconds jlabel
             seconds.setText("00m:00s");
             //Reset the timer
@@ -951,7 +949,9 @@ public class KiwiCountUI
     private javax.swing.JLabel txtPlayerName;
     private javax.swing.JLabel txtPredatorsLeft;
     // End of variables declaration//GEN-END:variables
-
+   /**
+    * Set the heart beat sound
+    */
    public void createHeartBeat(){
     URL heartBeatUrl = null;
     URI heartBeatUri;
@@ -963,11 +963,12 @@ public class KiwiCountUI
         }
         heatBeatAudio = Applet.newAudioClip(heartBeatUrl);
    }
-   
+   /**
+    * Set the timer label
+    * @param text 
+    */
     public void setTime(String text){
-       //System.out.println(text);
        this.seconds.setText(text);
-       
    }
   
     private final static File heartBeatFile = new File("sound/heartbeat.wav");
