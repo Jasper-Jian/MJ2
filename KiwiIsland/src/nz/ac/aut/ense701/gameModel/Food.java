@@ -36,6 +36,7 @@ public class Food extends Item
         return this.energy;
     }
     
+    
     /**
      * @return string representation of food
      */
