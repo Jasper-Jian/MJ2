@@ -191,6 +191,15 @@ public class Game
     public String getOccupantStringRepresentation(int row, int column) {
         return island.getOccupantStringRepresentation(new Position(island, row, column));
     }
+    /**
+     * Get the name of the occupant according the player's positions
+     * @param row
+     * @param column
+     * @return 
+     */
+    public String getOccupantName(int row,int column){
+    return island.getOccupantNameString(new Position(island, row, column));
+    }
     
     /**
      * Get values from player for GUI display
@@ -696,7 +705,23 @@ public class Game
             }
         } 
         else // hazard reduces player's stamina
-        {
+        {   //Tornadoes the player will be blown to a new location
+            if("Tornadoes".equals(hazard.getName())){
+                 Random rand = new Random();
+                 //New position's row
+                 int row = rand.nextInt(10);
+                 //New position's column
+                 int column = rand.nextInt(10);
+                 //New Position of the player
+                 Position newPosition = new Position(island, row, column);
+                 Terrain  terrain     = island.getTerrain(newPosition);
+                // move the player to new position
+                 player.moveToPosition(newPosition, terrain);
+                 island.updatePlayerPosition(player);
+                 // Is there a hazard?
+                 checkForHazard();
+                 updateGameState();  
+            }
             double impact = hazard.getImpact();
             // Impact is a reduction in players energy by this % of Max Stamina
             double reduction = player.getMaximumStaminaLevel() * impact;
