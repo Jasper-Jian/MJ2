@@ -63,8 +63,10 @@ public class KiwiCountUI
     @Override
     public void gameStateChanged()
     {
-        stepCounter.addStep();
+        //Get the changed weather string
         weather.getWeatherChageStr();
+        //count step
+        stepCounter.addStep();
         update();
         //if the player's stamina is too low, user will hear the heart beat warning
         lowStaminaWarn();
@@ -79,6 +81,7 @@ public class KiwiCountUI
                     JOptionPane.INFORMATION_MESSAGE);
             //initialize the step of stepcounter
             stepCounter.setStep(-1);
+            weather.setWeatherStr("Sunny");
             //Return zero to the seconds jlabel
             seconds.setText("00m:00s");
             //Reset the timer
@@ -93,6 +96,7 @@ public class KiwiCountUI
                     JOptionPane.INFORMATION_MESSAGE);
             //initialize the step of stepcounter
             stepCounter.setStep(-1);
+            weather.setWeatherStr("Sunny");
             //Return zero to the seconds jlabel
             seconds.setText("00m:00s");
             //Reset the timer
