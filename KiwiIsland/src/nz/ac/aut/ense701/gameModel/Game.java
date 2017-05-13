@@ -2,6 +2,7 @@ package nz.ac.aut.ense701.gameModel;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -447,10 +448,28 @@ public class Game
         //Player east food to increase stamina
         {
             Food food = (Food) item;
+            if("Mushroom".equals(food.getName())){
+                            Random rand = new Random();
+                            //Determine whether the mushroom is toxic
+                            boolean flag = rand.nextBoolean();
+                            if(flag){
+                             //Reduce stamina if the mushroom is toxic
+                             player.reduceStamina(food.getEnergy());
+                             this.playerMessage="The mushroom is toxic!";
+                              // player has consumed the food: remove from inventory
+                             player.drop(food);
+                            }else{
+                              //gets energy if the mushroom is not toxic
+                              player.increaseStamina(food.getEnergy());
+                              // player has consumed the food: remove from inventory
+                              player.drop(food);
+                            }
+                        }else{
             // player gets energy boost from food
             player.increaseStamina(food.getEnergy());
             // player has consumed the food: remove from inventory
             player.drop(food);
+            }
             // use successful: everybody has to know that
             notifyGameEventListeners();
         }
@@ -514,7 +533,7 @@ public class Game
                     
             // Is there a hazard?
             checkForHazard();
-
+            
             updateGameState();            
         }
         return successfulMove;
@@ -730,6 +749,8 @@ public class Game
             this.island = new Island(rowNum, colNum);
             //Set up the player information
             setUpPlayer(root);
+            //Set up the level of the island
+            
             //Set up the terrain for each grid
             setUpTerrain(root);
             //Set up the occupant for each grid
@@ -876,7 +897,8 @@ public class Game
                 }
             }
 
-    }    
+    }  
+   
 
     private Island island;
     private Player player;
