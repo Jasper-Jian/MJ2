@@ -1,14 +1,25 @@
 package nz.ac.aut.ense701.gui;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.GameEventListener;
 import nz.ac.aut.ense701.gameModel.GameState;
 import nz.ac.aut.ense701.gameModel.MoveDirection;
 import nz.ac.aut.ense701.gameModel.StepCounter;
+import nz.ac.aut.ense701.gameModel.Timer;
 import nz.ac.aut.ense701.gameModel.Weather;
 
 /*
@@ -22,6 +33,7 @@ public class KiwiCountUI
     extends javax.swing.JFrame
     implements GameEventListener
 {
+
     private StepCounter stepCounter = StepCounter.getSingleTon();
     private Weather weather = Weather.getSingleTon();
     
@@ -33,12 +45,16 @@ public class KiwiCountUI
     {
         assert game != null : "Make sure game object is created before UI";
         this.game = game;
+        createHeartBeat();
         setAsGameListener();
         initComponents();
+        timer = new Timer(this);
+        timer.start();
         initIslandGrid();
         CustomKeyListener();
         update();
     }
+    
     
     /**
      * This method is called by the game model every time something changes.
@@ -48,7 +64,12 @@ public class KiwiCountUI
     public void gameStateChanged()
     {
         update();
-        
+        //if the player's stamina is too low, user will hear the heart beat warning
+        stepCounter.addStep();
+        weather.getWeatherChageStr();
+        lowStaminaWarn();
+        //
+        changeStaminaColor();
         // check for "game over" or "game won"
         if ( game.getState() == GameState.LOST )
         {
@@ -56,7 +77,12 @@ public class KiwiCountUI
                     this, 
                     game.getLoseMessage(), "Game over!",
                     JOptionPane.INFORMATION_MESSAGE);
+            //initialize the step of stepcounter
             stepCounter.setStep(0);
+            //Return zero to the seconds jlabel
+            seconds.setText("00m:00s");
+            //Reset the timer
+            timer.setProgramStart(System.currentTimeMillis());
             //initalize the weather; the default weather is "Sunny"
             weather.setWeatherStr("Sunny");
             game.createNewGame();
@@ -67,7 +93,12 @@ public class KiwiCountUI
                     this, 
                     game.getWinMessage(), "Well Done!",
                     JOptionPane.INFORMATION_MESSAGE);
+            //initialize the step of stepcounter
             stepCounter.setStep(0);
+            //Return zero to the seconds jlabel
+            seconds.setText("00m:00s");
+            //Reset the timer
+            timer.setProgramStart(System.currentTimeMillis());
             game.createNewGame();
         }
         else if (game.messageForPlayer())
@@ -116,6 +147,7 @@ public class KiwiCountUI
         //Update Weather and Step Counter information
         jLabel1.setText(Integer.toString(stepCounter.getStep()));
         jLabel4.setText(weather.getWeatherStr());
+        
         // update inventory list
         listInventory.setListData(game.getPlayerInventory());
         listInventory.clearSelection();
@@ -276,6 +308,9 @@ public class KiwiCountUI
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        timerJpanel = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        seconds = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kiwi Count");
@@ -287,11 +322,11 @@ public class KiwiCountUI
         pnlIsland.setLayout(pnlIslandLayout);
         pnlIslandLayout.setHorizontalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 517, Short.MAX_VALUE)
         );
         pnlIslandLayout.setVerticalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGap(0, 566, Short.MAX_VALUE)
         );
 
         pnlContent.add(pnlIsland, java.awt.BorderLayout.CENTER);
@@ -304,6 +339,7 @@ public class KiwiCountUI
         pnlPlayerData.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         pnlPlayerData.setLayout(new java.awt.GridBagLayout());
 
+        lblPlayerName.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         lblPlayerName.setText("Name:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -318,6 +354,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         pnlPlayerData.add(txtPlayerName, gridBagConstraints);
 
+        lblPlayerStamina.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         lblPlayerStamina.setText("Stamina:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -327,6 +364,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         pnlPlayerData.add(lblPlayerStamina, gridBagConstraints);
 
+        progPlayerStamina.setForeground(new java.awt.Color(0, 153, 51));
         progPlayerStamina.setStringPainted(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -337,6 +375,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
         pnlPlayerData.add(progPlayerStamina, gridBagConstraints);
 
+        lblBackpackWeight.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         lblBackpackWeight.setText("Backpack Weight:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -356,6 +395,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
         pnlPlayerData.add(progBackpackWeight, gridBagConstraints);
 
+        lblBackpackSize.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         lblBackpackSize.setText("Backpack Size:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -375,6 +415,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
         pnlPlayerData.add(progBackpackSize, gridBagConstraints);
 
+        lblPredators.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         lblPredators.setText("Predators Left:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -382,6 +423,7 @@ public class KiwiCountUI
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         pnlPlayerData.add(lblPredators, gridBagConstraints);
 
+        lblKiwisCounted.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         lblKiwisCounted.setText("Kiwis Counted :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -389,6 +431,7 @@ public class KiwiCountUI
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         pnlPlayerData.add(lblKiwisCounted, gridBagConstraints);
 
+        txtKiwisCounted.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         txtKiwisCounted.setText("0");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -396,6 +439,7 @@ public class KiwiCountUI
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         pnlPlayerData.add(txtKiwisCounted, gridBagConstraints);
 
+        txtPredatorsLeft.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         txtPredatorsLeft.setText("P");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -414,8 +458,10 @@ public class KiwiCountUI
         pnlControls.add(pnlPlayer, gridBagConstraints);
 
         pnlMovement.setBorder(javax.swing.BorderFactory.createTitledBorder("Movement"));
+        pnlMovement.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         pnlMovement.setLayout(new java.awt.GridBagLayout());
 
+        btnMoveNorth.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnMoveNorth.setText("N");
         btnMoveNorth.setFocusable(false);
         btnMoveNorth.addActionListener(new java.awt.event.ActionListener() {
@@ -432,6 +478,7 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         pnlMovement.add(btnMoveNorth, gridBagConstraints);
 
+        btnMoveSouth.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnMoveSouth.setText("S");
         btnMoveSouth.setFocusable(false);
         btnMoveSouth.addActionListener(new java.awt.event.ActionListener() {
@@ -448,6 +495,7 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         pnlMovement.add(btnMoveSouth, gridBagConstraints);
 
+        btnMoveEast.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnMoveEast.setText("E");
         btnMoveEast.setFocusable(false);
         btnMoveEast.addActionListener(new java.awt.event.ActionListener() {
@@ -464,6 +512,7 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         pnlMovement.add(btnMoveEast, gridBagConstraints);
 
+        btnMoveWest.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnMoveWest.setText("W");
         btnMoveWest.setFocusable(false);
         btnMoveWest.addActionListener(new java.awt.event.ActionListener() {
@@ -491,6 +540,7 @@ public class KiwiCountUI
         pnlInventory.setBorder(javax.swing.BorderFactory.createTitledBorder("Inventory"));
         pnlInventory.setLayout(new java.awt.GridBagLayout());
 
+        listInventory.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         listInventory.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3" };
             public int getSize() { return strings.length; }
@@ -515,6 +565,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlInventory.add(scrlInventory, gridBagConstraints);
 
+        btnDrop.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnDrop.setText("Drop");
         btnDrop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -531,6 +582,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlInventory.add(btnDrop, gridBagConstraints);
 
+        btnUse.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnUse.setText("Use");
         btnUse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -561,6 +613,7 @@ public class KiwiCountUI
         pnlObjectsLayout.rowHeights = new int[] {0, 5, 0};
         pnlObjects.setLayout(pnlObjectsLayout);
 
+        listObjects.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         listObjects.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3" };
             public int getSize() { return strings.length; }
@@ -586,6 +639,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlObjects.add(scrlObjects, gridBagConstraints);
 
+        btnCollect.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnCollect.setText("Collect");
         btnCollect.setToolTipText("");
         btnCollect.setMaximumSize(new java.awt.Dimension(61, 23));
@@ -606,6 +660,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlObjects.add(btnCollect, gridBagConstraints);
 
+        btnCount.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnCount.setText("Count");
         btnCount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -634,10 +689,10 @@ public class KiwiCountUI
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel2.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Current Weather:");
 
-        jLabel4.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel4.setText("Sunny");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -645,14 +700,13 @@ public class KiwiCountUI
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(94, 94, 94)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(159, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(75, 75, 75))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -666,10 +720,10 @@ public class KiwiCountUI
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel3.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setText("Step Counter:");
 
-        jLabel1.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setText("0");
         jLabel1.setToolTipText("");
 
@@ -683,9 +737,9 @@ public class KiwiCountUI
                         .addContainerGap()
                         .addComponent(jLabel3))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
+                        .addGap(76, 76, 76)
                         .addComponent(jLabel1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -698,15 +752,48 @@ public class KiwiCountUI
 
         jLabel1.getAccessibleContext().setAccessibleParent(pnlPlayerData);
 
+        timerJpanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel5.setText("Timer:");
+
+        seconds.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        seconds.setText("00m:00s");
+        seconds.setToolTipText("");
+
+        javax.swing.GroupLayout timerJpanelLayout = new javax.swing.GroupLayout(timerJpanel);
+        timerJpanel.setLayout(timerJpanelLayout);
+        timerJpanelLayout.setHorizontalGroup(
+            timerJpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(timerJpanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addContainerGap(168, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, timerJpanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(seconds)
+                .addGap(75, 75, 75))
+        );
+        timerJpanelLayout.setVerticalGroup(
+            timerJpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(timerJpanelLayout.createSequentialGroup()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(seconds)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(78, 78, 78)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 378, Short.MAX_VALUE))
+                .addGap(57, 57, 57)
+                .addComponent(timerJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -714,7 +801,8 @@ public class KiwiCountUI
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(timerJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -726,28 +814,19 @@ public class KiwiCountUI
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMoveEastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveEastActionPerformed
-        game.playerMove(MoveDirection.EAST);
-        stepCounter.addStep();
-        weather.getWeatherChageStr();
-        
+        game.playerMove(MoveDirection.EAST);   
     }//GEN-LAST:event_btnMoveEastActionPerformed
 
     private void btnMoveNorthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNorthActionPerformed
         game.playerMove(MoveDirection.NORTH);
-        stepCounter.addStep();
-        weather.getWeatherChageStr();
     }//GEN-LAST:event_btnMoveNorthActionPerformed
 
     private void btnMoveSouthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveSouthActionPerformed
         game.playerMove(MoveDirection.SOUTH);
-        stepCounter.addStep();
-        weather.getWeatherChageStr();
     }//GEN-LAST:event_btnMoveSouthActionPerformed
 
     private void btnMoveWestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveWestActionPerformed
         game.playerMove(MoveDirection.WEST);
-        stepCounter.addStep();
-        weather.getWeatherChageStr();
     }//GEN-LAST:event_btnMoveWestActionPerformed
 
     private void btnCollectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCollectActionPerformed
@@ -771,6 +850,7 @@ public class KiwiCountUI
 
     private void btnUseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUseActionPerformed
         game.useItem( listInventory.getSelectedValue());
+        
     }//GEN-LAST:event_btnUseActionPerformed
 
     private void listInventoryValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listInventoryValueChanged
@@ -809,6 +889,37 @@ public class KiwiCountUI
         }
     }
     
+    /**
+     * Low Stamina Warning
+     * @author Minghao Yang
+     */
+    private void lowStaminaWarn(){
+            //Get the current stamina
+            double playerCurrentStamina = game.getPlayer().getStaminaLevel();
+            if(playerCurrentStamina<=50){
+                heatBeatAudio.loop();
+            }else{
+                if(heatBeatAudio!=null){
+            heatBeatAudio.stop();
+                }
+            }   
+    }
+    /**
+     * Change the progPlayerStamina label's foreground color according to the player's stamina
+     * @author Minghao Yang
+     */
+    private void changeStaminaColor(){
+            //Get the current stamina
+            double playerCurrentStamina = game.getPlayer().getStaminaLevel();
+            if(playerCurrentStamina<=100 && playerCurrentStamina>=70){
+            progPlayerStamina.setForeground(new Color(0, 153, 51));
+            }else if(playerCurrentStamina>=40 && playerCurrentStamina<70){
+            progPlayerStamina.setForeground(new Color(255, 153, 51));
+            }else{
+            progPlayerStamina.setForeground(Color.RED);
+            }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCollect;
     private javax.swing.JButton btnCount;
@@ -822,6 +933,7 @@ public class KiwiCountUI
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -833,10 +945,33 @@ public class KiwiCountUI
     private javax.swing.JProgressBar progBackpackSize;
     private javax.swing.JProgressBar progBackpackWeight;
     private javax.swing.JProgressBar progPlayerStamina;
+    private javax.swing.JLabel seconds;
+    private javax.swing.JPanel timerJpanel;
     private javax.swing.JLabel txtKiwisCounted;
     private javax.swing.JLabel txtPlayerName;
     private javax.swing.JLabel txtPredatorsLeft;
     // End of variables declaration//GEN-END:variables
 
-    private Game game;
+   public void createHeartBeat(){
+    URL heartBeatUrl = null;
+    URI heartBeatUri;
+    heartBeatUri = heartBeatFile.toURI();
+        try {
+            heartBeatUrl = heartBeatUri.toURL();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(KiwiCountUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        heatBeatAudio = Applet.newAudioClip(heartBeatUrl);
+   }
+   
+    public void setTime(String text){
+       //System.out.println(text);
+       this.seconds.setText(text);
+       
+   }
+  
+    private final static File heartBeatFile = new File("sound/heartbeat.wav");
+    private  AudioClip heatBeatAudio;
+    private Timer timer;
+    public Game game;
 }
