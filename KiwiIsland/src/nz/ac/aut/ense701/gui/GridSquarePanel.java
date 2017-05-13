@@ -2,9 +2,6 @@ package nz.ac.aut.ense701.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -51,27 +48,39 @@ public class GridSquarePanel extends javax.swing.JPanel
         
         Color      color;
         ImageIcon icon = null;
-        switch ( terrain )
-        {
-           case SAND     : icon = new ImageIcon("img/Sand.jpg");
-            break;
-            case FOREST   : icon = new ImageIcon("img/Froest.jpg");
-            break;
-            case WETLAND : icon = new ImageIcon("img/Wetland.jpg"); 
-            break;
-            case SCRUB : icon = new ImageIcon("img/Scrub.jpg"); 
-            break;
-            case WATER    : icon = new ImageIcon("img/Water.jpg");   
-            break;
-            default  : color = Color.LIGHT_GRAY; 
-            break;
-        }
         
       if ( squareExplored || squareVisible )
         {
             // Set the text of the JLabel according to the occupant
-            lblText.setText(game.getOccupantStringRepresentation(row,column));
-            
+            //If the occupant of the grid is the Hazard
+            if("H".equals(game.getOccupantStringRepresentation(row, column))){
+            switch ( terrain )
+            {
+            case SAND     : icon = new ImageIcon("img/Sand_Hazard.jpg");
+            break;
+            case FOREST   : icon = new ImageIcon("img/Forest_Hazard.jpg");
+            break;
+            case WETLAND : icon = new ImageIcon("img/Wetland_Hazard.jpg"); 
+            break;
+            case SCRUB : icon = new ImageIcon("img/Scrub_Hazard.jpg"); 
+            break;
+            case WATER    : icon = new ImageIcon("img/Water_Hazard.jpg");   
+            break;}
+            }else{
+           switch ( terrain )
+            {
+           case SAND     : icon = new ImageIcon("img/Sand_"+game.getOccupantName(row, column)+".jpg");
+            break;
+            case FOREST   : icon = new ImageIcon("img/Forest_"+game.getOccupantName(row, column)+".jpg");
+            break;
+            case WETLAND : icon = new ImageIcon("img/Wetland_"+game.getOccupantName(row, column)+".jpg"); 
+            break;
+            case SCRUB : icon = new ImageIcon("img/Scrub_"+game.getOccupantName(row, column)+".jpg"); 
+            break;
+            case WATER    : icon = new ImageIcon("img/Water_"+game.getOccupantName(row, column)+".jpg");   
+            break;
+            }
+            }
             lblText.setIcon(icon);
             // set border colour according to 
             // whether the player is in the grid square or not  
