@@ -6,7 +6,6 @@
 
 package nz.ac.aut.ense701.gameModel;
 
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nz.ac.aut.ense701.gui.KiwiCountUI;
