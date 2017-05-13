@@ -1,7 +1,12 @@
 package nz.ac.aut.ense701.gui;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import nz.ac.aut.ense701.gameModel.Game;
@@ -28,8 +33,12 @@ public class GridSquarePanel extends javax.swing.JPanel
         this.row    = row;
         this.column = column;
         initComponents();
+        lblText.setHorizontalTextPosition(SwingConstants.CENTER);
+        lblText.setFont(new java.awt.Font("Tahoma", Font.BOLD, 18)); 
+        
     }
-
+    
+    
     /**
      * Updates the representation of the grid square panel.
      */
@@ -62,15 +71,7 @@ public class GridSquarePanel extends javax.swing.JPanel
         {
             // Set the text of the JLabel according to the occupant
             lblText.setText(game.getOccupantStringRepresentation(row,column));
-            // Set the colour. 
-            //            if ( squareVisible && !squareExplored ) 
-            //            {
-            //                When explored the colour is brighter
-            //                color = new Color(Math.min(255, color.getRed()   + 128), 
-            //                                  Math.min(255, color.getGreen() + 128), 
-            //                                  Math.min(255, color.getBlue()  + 128));
-            //            }
-               //            lblText.setBackground(color);
+            
             lblText.setIcon(icon);
             // set border colour according to 
             // whether the player is in the grid square or not  
@@ -98,19 +99,19 @@ public class GridSquarePanel extends javax.swing.JPanel
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setLayout(new java.awt.BorderLayout());
 
-        lblText.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblText.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblText.setText("content");
+        lblText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         lblText.setOpaque(true);
         add(lblText, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblText;
     // End of variables declaration//GEN-END:variables
-    
+   
     private Game game;
     private int row, column;
-    
     private static final Border normalBorder = new LineBorder(Color.BLACK, 1);
     private static final Border activeBorder = new LineBorder(Color.RED, 3);
 }
