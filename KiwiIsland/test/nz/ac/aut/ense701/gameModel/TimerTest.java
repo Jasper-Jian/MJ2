@@ -5,6 +5,9 @@
  */
 
 package nz.ac.aut.ense701.gameModel;
+import static junit.framework.TestCase.assertFalse;
+import nz.ac.aut.ense701.gui.KiwiCountUI;
+import nz.ac.aut.ense701.gameModel.Timer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,11 +20,13 @@ import static org.junit.Assert.*;
  */
 public class TimerTest {
     
+    KiwiCountUI kiwiCountUI;
+    Timer timer = new Timer(kiwiCountUI);
     public TimerTest() {
     }
     
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() {  
     }
     
     @AfterClass
@@ -29,42 +34,26 @@ public class TimerTest {
     }
 
     /**
-     * Test of getProgramStart method, of class Timer.
+     * If the game has not start the time will remain the same
      */
     @Test
     public void testGetProgramStart() {
-        System.out.println("getProgramStart");
-        Timer instance = null;
-        long expResult = 0L;
-        long result = instance.getProgramStart();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("Test Time when game started");  
+        long first, second;
+        first= timer.getProgramStart();    
+        second = timer.getProgramStart();
+        System.out.println(first+"            "+second);   
+        assertEquals(first, second);
+    }    
+    
+    @Test
+    public void testTimeDifferent() {
+        System.out.println("Test Time after game started");  
+        long CurrentTime = timer.getProgramStart();   
+        long AfterGameStart = System.currentTimeMillis();       
+        System.out.println(CurrentTime+"            "+AfterGameStart);        
+        assertNotEquals(CurrentTime, AfterGameStart);
     }
 
-    /**
-     * Test of setProgramStart method, of class Timer.
-     */
-    @Test
-    public void testSetProgramStart() {
-        System.out.println("setProgramStart");
-        long programStart = 0L;
-        Timer instance = null;
-        instance.setProgramStart(programStart);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of run method, of class Timer.
-     */
-    @Test
-    public void testRun() {
-        System.out.println("run");
-        Timer instance = null;
-        instance.run();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
     
 }
