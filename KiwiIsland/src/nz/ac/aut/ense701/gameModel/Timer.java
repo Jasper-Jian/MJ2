@@ -48,8 +48,13 @@ public class Timer extends Thread{
     @Override
     public void run() {
         while (true) {  
-            if(this.kiwiCountUI.game.getState()!=GameState.LOST || this.kiwiCountUI.game.getState()!=GameState.WON){
-                this.kiwiCountUI.setTime(format(System.currentTimeMillis()-programStart));
+            if(this.kiwiCountUI.game.getState()!=GameState.LOST || this.kiwiCountUI.game.getState()!=GameState.WON ){
+                //check whether the player is alive
+                if(this.kiwiCountUI.game.getPlayer().isAlive()){
+                 this.kiwiCountUI.setTime(format(System.currentTimeMillis()-programStart));
+                }else{
+                this.kiwiCountUI.setTime(format(0));
+                } 
             }
             try {
             sleep(1);
