@@ -72,7 +72,7 @@ and open the template in the editor.
     H,Fall,Tripping on roots hurt your ankle and,1,4,0.5;
     H,Cliff,A fall down a small cliff,6,5,0.3;
     H,Broken trap,Your predator trap has broken,7,6,0.0;  
-    H,Tornadoes,You will be in a new position because of the Tornadoes and,4,7,0.2;  
+    H,Tornadoes,You are be in a new position because of the Tornadoes and the Tornadoes,4,7,0.2;  
     </occupants>
         
     
