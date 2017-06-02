@@ -1,0 +1,53 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package nz.ac.aut.ense701.gameModel;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+public class LoginTest {
+    Game game = new Game();
+    String username = null;
+    String password = null;
+    String expect = null;
+    
+     @Given("^input username:(\\w+)$")
+      public void inputUsername(String username) throws Throwable {
+        this.username = username;
+       System.out.println("Username get");
+      }
+    @Given("^input password:(\\w+)$")
+      public void inputPassword(String password) throws Throwable {
+         this.password=password;
+         System.out.println("Password get");
+      }
+
+      @When("^Click at Login button$")
+      public void login() throws Throwable {
+        expect = game.login(username, password);
+        System.out.println(expect);
+        System.out.println("Button CLicked");        
+      }
+
+      @Then("^Login Success$")
+      public void loginSuccess(String expect) throws Throwable{     
+          if(expect==null || expect ==""){
+              System.out.println("Login Fail");
+          }else{
+              System.out.println("Login Success");
+          }
+          
+      }
+        @Then("^Login Fail")
+      public void loginFail(String expect) throws Throwable{     
+          if(expect==null || expect ==""){
+              System.out.println("Login Fail");
+          }else{
+              System.out.println("Login Success");
+          }
+      }
+}
+
