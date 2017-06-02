@@ -13,13 +13,13 @@ public class LoginTest {
     String password = null;
     String expect = null;
     
-     @Given("^input username:(\\w+)$")
+     @Given("^input username: \"([^\"]*)\"$")
       public void inputUsername(String username) throws Throwable {     
           this.username=username;
             System.out.println(username);  
          
       }
-    @Given("^input password:(\\w+)$")
+    @Given("^input password: \"([^\"]*)\"$")
       public void inputPassword(String password) throws Throwable {
           this.password=password;
             System.out.println(password);           
@@ -40,7 +40,7 @@ public class LoginTest {
       }
         @Then("^Login Fail")
       public void loginFail() throws Throwable{     
-        throw new Exception("Login Fail"); 
+        System.out.println("Login Fail"); 
       }
 }
 

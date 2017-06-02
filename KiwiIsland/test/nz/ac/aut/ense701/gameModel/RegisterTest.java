@@ -17,18 +17,15 @@ public class RegisterTest {
     String username = null;
     String password = null;
     String expect = null;
-    @Given("^input register username:(\\w+)$")
-       public void Register_input_Username(String username) throws Throwable {        
-        if(username!=""){
-            this.username = username;
-            System.out.println("username inputed");
-        }
+    @Given("^input register username: \"([^\"]*)\"$")
+       public void input_register_username(String username) throws Throwable {        
+        this.username = username;
         if(username=="123"){
              System.out.println("username exist");
         }
       }
-    @Given("^input register password:(\\s+)$")
-      public void Register_input_Password(String password) throws Throwable {
+    @Given("^input register password: \"([^\"]*)\"$")
+      public void input_register_password(String password) throws Throwable {
         if(password!=""){
             this.password=password;
             System.out.println("password inputed");
@@ -43,11 +40,10 @@ public class RegisterTest {
       public void Register_Successed(){    
         Game game = new Game();    
         expect= game.register(username, password);
-        System.out.println(expect);
-          
+        System.out.println(expect);          
       }
     @Then("^Register Fail")
       public void Register_Failed() throws Throwable{     
-        throw new Exception("Register Fail"); 
+        System.out.println("Register Fail"); 
       }
 }
