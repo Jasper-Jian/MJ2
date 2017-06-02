@@ -11,11 +11,11 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author Administrator
+ * @author Zhipei Jian
  */
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"pretty"})
-public class LoginTestRunner {
+public class AATestRunner {
     
 }
