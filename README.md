@@ -9,7 +9,11 @@ VERSION or DATE: Version 4.0, 04/06/2017
 
 AUTHORS: AS Mike, Jack, Zhipei, Manfei
 
-For the project run will need to start the databse server first and import all the Jar file in to the library, all the Jar files are provided under lib folder.
+For the project run:
+
+1. start the databse server first 
+
+2. import all the Jar file in to the library, all the Jar files are provided under lib folder.
 
 ---------------------------------------------------
 
@@ -43,6 +47,8 @@ Login,
 Register,
 
 Main Menu,
+
+High Score Caculation,
 
 Score Board.
 
