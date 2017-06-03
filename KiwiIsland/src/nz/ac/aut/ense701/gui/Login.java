@@ -120,8 +120,9 @@ public class Login extends javax.swing.JFrame {
         this.loginJOption.showMessageDialog(null, messageTxt, "LOGIN", JOptionPane.INFORMATION_MESSAGE);
         if(messageTxt.startsWith("Successful",0)){
             this.dispose();
-            InstructionNew instructionNew = new InstructionNew(game);
-            instructionNew.setVisible(true);
+            this.game.setCurrentPlayerName(userName);
+            KiwiCountUI kiwiCountUI = new KiwiCountUI(game);
+            kiwiCountUI.setVisible(true);
         }else{
             userNameTxt.setText("");
             passwordTxt.setText("");

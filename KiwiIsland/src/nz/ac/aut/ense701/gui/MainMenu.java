@@ -36,6 +36,9 @@ public class MainMenu extends javax.swing.JFrame {
 
         registerBtn = new javax.swing.JButton();
         loginBtn = new javax.swing.JButton();
+        exitBtn = new javax.swing.JButton();
+        instructionBtn = new javax.swing.JButton();
+        rankBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -52,7 +55,7 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(registerBtn);
-        registerBtn.setBounds(320, 330, 150, 60);
+        registerBtn.setBounds(320, 220, 150, 50);
 
         loginBtn.setBackground(new java.awt.Color(176, 255, 176));
         loginBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -63,14 +66,47 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(loginBtn);
-        loginBtn.setBounds(320, 260, 150, 60);
+        loginBtn.setBounds(320, 160, 150, 50);
+
+        exitBtn.setBackground(new java.awt.Color(176, 255, 176));
+        exitBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        exitBtn.setText("Exit");
+        exitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(exitBtn);
+        exitBtn.setBounds(320, 400, 150, 50);
+
+        instructionBtn.setBackground(new java.awt.Color(176, 255, 176));
+        instructionBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        instructionBtn.setText("Instruction");
+        instructionBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instructionBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(instructionBtn);
+        instructionBtn.setBounds(320, 280, 150, 50);
+
+        rankBtn.setBackground(new java.awt.Color(176, 255, 176));
+        rankBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        rankBtn.setText("Rank");
+        rankBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rankBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(rankBtn);
+        rankBtn.setBounds(320, 340, 150, 50);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/nz/ac/aut/ense701/gui/gameMenuBackGround.jpg"))); // NOI18N
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 528));
         jLabel1.setMinimumSize(new java.awt.Dimension(800, 528));
         jLabel1.setPreferredSize(new java.awt.Dimension(800, 528));
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(0, 0, 800, 528);
+        jLabel1.setBounds(0, 0, 800, 490);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -88,6 +124,26 @@ public class MainMenu extends javax.swing.JFrame {
         Register register = new Register(game);
         register.setVisible(true);
     }//GEN-LAST:event_registerBtnActionPerformed
+
+    private void rankBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rankBtnActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        Rank rank = new Rank(game);
+        rank.setVisible(true);
+    }//GEN-LAST:event_rankBtnActionPerformed
+
+    private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        System.exit(0);
+    }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void instructionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instructionBtnActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        InstructionNew instruction = new InstructionNew(game);
+        instruction.setVisible(true);
+    }//GEN-LAST:event_instructionBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -125,8 +181,11 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton exitBtn;
+    private javax.swing.JButton instructionBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton loginBtn;
+    private javax.swing.JButton rankBtn;
     private javax.swing.JButton registerBtn;
     // End of variables declaration//GEN-END:variables
     public Game game;

@@ -38,7 +38,7 @@ public class InstructionNew extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        startBtn = new javax.swing.JButton();
+        returnBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -62,39 +62,33 @@ public class InstructionNew extends javax.swing.JFrame {
         jLabel3.setBounds(430, 90, 350, 230);
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/nz/ac/aut/ense701/gui/Instruction3.jpg"))); // NOI18N
-        jLabel4.setMaximumSize(new java.awt.Dimension(555, 111));
-        jLabel4.setMinimumSize(new java.awt.Dimension(555, 111));
-        jLabel4.setPreferredSize(new java.awt.Dimension(555, 111));
         getContentPane().add(jLabel4);
         jLabel4.setBounds(150, 350, 555, 110);
 
-        startBtn.setBackground(new java.awt.Color(176, 255, 176));
-        startBtn.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        startBtn.setText("GAME START");
-        startBtn.addActionListener(new java.awt.event.ActionListener() {
+        returnBtn.setBackground(new java.awt.Color(176, 255, 176));
+        returnBtn.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
+        returnBtn.setText("RETURN");
+        returnBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startBtnActionPerformed(evt);
+                returnBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(startBtn);
-        startBtn.setBounds(350, 490, 190, 60);
+        getContentPane().add(returnBtn);
+        returnBtn.setBounds(360, 520, 130, 40);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/nz/ac/aut/ense701/gui/InstructionBG.jpg"))); // NOI18N
-        jLabel1.setMaximumSize(new java.awt.Dimension(833, 638));
-        jLabel1.setMinimumSize(new java.awt.Dimension(833, 638));
-        jLabel1.setPreferredSize(new java.awt.Dimension(833, 638));
         getContentPane().add(jLabel1);
         jLabel1.setBounds(0, 0, 833, 640);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
+    private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed
         // TODO add your handling code here:
         this.dispose();
-        KiwiCountUI kiwiCountUI = new KiwiCountUI(game);
-        kiwiCountUI.setVisible(true);
-    }//GEN-LAST:event_startBtnActionPerformed
+        MainMenu menu = new MainMenu(game);
+        menu.setVisible(true);
+    }//GEN-LAST:event_returnBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -136,7 +130,7 @@ public class InstructionNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JButton startBtn;
+    private javax.swing.JButton returnBtn;
     // End of variables declaration//GEN-END:variables
     public Game game;
 }

@@ -28,21 +28,19 @@ import nz.ac.aut.ense701.gameModel.Weather;
  * @author AS
  * @version Apirl 2017
  */
-
-public class KiwiCountUI 
-    extends javax.swing.JFrame
-    implements GameEventListener
-{
+public class KiwiCountUI
+        extends javax.swing.JFrame
+        implements GameEventListener {
 
     private StepCounter stepCounter = StepCounter.getSingleTon();
     private Weather weather = Weather.getSingleTon();
-    
+
     /**
      * Creates a GUI for the KiwiIsland game.
+     *
      * @param game the game object to represent with this GUI.
      */
-    public KiwiCountUI(Game game) 
-    {
+    public KiwiCountUI(Game game) {
         assert game != null : "Make sure game object is created before UI";
         this.game = game;
         createHeartBeat();
@@ -54,15 +52,13 @@ public class KiwiCountUI
         CustomKeyListener();
         update();
     }
-    
-    
+
     /**
      * This method is called by the game model every time something changes.
      * Trigger an update.
      */
     @Override
-    public void gameStateChanged()
-    {
+    public void gameStateChanged() {
         //Get the changed weather string
         weather.getWeatherChageStr();
         //count step
@@ -73,167 +69,170 @@ public class KiwiCountUI
         //change the player's stamina color according to the level of the stamina
         changeStaminaColor();
         // check for "game over" or "game won"
-        if ( game.getState() == GameState.LOST )
-        {
+        if (game.getState() == GameState.LOST) {
             JOptionPane.showMessageDialog(
-                    this, 
+                    this,
                     game.getLoseMessage(), "Game over!",
                     JOptionPane.INFORMATION_MESSAGE);
             //initialize the step of stepcounter
             stepCounter.setStep(-1);
             weather.setWeatherStr("Sunny");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "You have got " + this.game.getPlayer().getScores() + " scores.", "SCORES",
+                    JOptionPane.INFORMATION_MESSAGE);
+            this.game.saveScores();
             //Return zero to the seconds jlabel
             seconds.setText("00m:00s");
             //Reset the timer
             timer.setProgramStart(System.currentTimeMillis());
+
             game.createNewGame();
-        }
-        else if ( game.getState() == GameState.WON )
-        {
+        } else if (game.getState() == GameState.WON) {
             JOptionPane.showMessageDialog(
-                    this, 
-                    game.getWinMessage(), "Well Done!",
+                    this,
+                    "You have got " + this.game.getPlayer().getScores() + " scores.", "SCORES",
                     JOptionPane.INFORMATION_MESSAGE);
+            this.game.saveScores();
             //initialize the step of stepcounter
             stepCounter.setStep(-1);
             weather.setWeatherStr("Sunny");
+            JOptionPane.showMessageDialog(
+                    this,
+                    game.getWinMessage(), "You have got " + this.game.getPlayer().getScores() + " scores.",
+                    JOptionPane.INFORMATION_MESSAGE);
             //Return zero to the seconds jlabel
             seconds.setText("00m:00s");
             //Reset the timer
             timer.setProgramStart(System.currentTimeMillis());
             game.createNewGame();
-        }
-        else if (game.messageForPlayer())
-        {
+        } else if (game.messageForPlayer()) {
             JOptionPane.showMessageDialog(
-                    this, 
+                    this,
                     game.getPlayerMessage(), "Important Information",
-                    JOptionPane.INFORMATION_MESSAGE);   
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
-     private void setAsGameListener()
-    {
-       game.addGameEventListener(this); 
+
+    private void setAsGameListener() {
+        game.addGameEventListener(this);
     }
-     
+
     /**
      * Updates the state of the UI based on the state of the game.
      */
-    private void update()
-    {
+    private void update() {
         // update the grid square panels
         Component[] components = pnlIsland.getComponents();
-        for ( Component c : components )
-        {
+        for (Component c : components) {
             // all components in the panel are GridSquarePanels,
             // so we can safely cast
             GridSquarePanel gsp = (GridSquarePanel) c;
             gsp.update();
         }
-        
+
         // update player information
         int[] playerValues = game.getPlayerValues();
-        txtPlayerName.setText(game.getPlayerName());
+        txtPlayerName.setText(game.getCurrentPlayerName());
         progPlayerStamina.setMaximum(playerValues[Game.MAXSTAMINA_INDEX]);
         progPlayerStamina.setValue(playerValues[Game.STAMINA_INDEX]);
         progBackpackWeight.setMaximum(playerValues[Game.MAXWEIGHT_INDEX]);
         progBackpackWeight.setValue(playerValues[Game.WEIGHT_INDEX]);
         progBackpackSize.setMaximum(playerValues[Game.MAXSIZE_INDEX]);
         progBackpackSize.setValue(playerValues[Game.SIZE_INDEX]);
-        
+
         //Update Kiwi and Predator information
-        txtKiwisCounted.setText(Integer.toString(game.getKiwiCount()) );
+        txtKiwisCounted.setText(Integer.toString(game.getKiwiCount()));
         txtPredatorsLeft.setText(Integer.toString(game.getPredatorsRemaining()));
-        
+
         //Update Weather and Step Counter information
         jLabel1.setText(Integer.toString(stepCounter.getStep()));
         jLabel4.setText(weather.getWeatherStr());
-        
+
         // update inventory list
         listInventory.setListData(game.getPlayerInventory());
         listInventory.clearSelection();
         listInventory.setToolTipText(null);
         btnUse.setEnabled(false);
         btnDrop.setEnabled(false);
-        
+
         // update list of visible objects
         listObjects.setListData(game.getOccupantsPlayerPosition());
         listObjects.clearSelection();
         listObjects.setToolTipText(null);
         btnCollect.setEnabled(false);
         btnCount.setEnabled(false);
-        
+
         // update movement buttons
         btnMoveNorth.setEnabled(game.isPlayerMovePossible(MoveDirection.NORTH));
-        btnMoveEast.setEnabled( game.isPlayerMovePossible(MoveDirection.EAST));
+        btnMoveEast.setEnabled(game.isPlayerMovePossible(MoveDirection.EAST));
         btnMoveSouth.setEnabled(game.isPlayerMovePossible(MoveDirection.SOUTH));
-        btnMoveWest.setEnabled( game.isPlayerMovePossible(MoveDirection.WEST));   
+        btnMoveWest.setEnabled(game.isPlayerMovePossible(MoveDirection.WEST));
     }
-    
+
     //Combine the KeyListener to different pannel
-    public void CustomKeyListener(){
-            setKeyListener(this);
-            pnlIsland.setFocusable(true);
-            
-             //Add space_bar key and X,C key listener for Use,collect, Drop and count 
-  	    setKeyListener(pnlIsland);
-  	    setKeyListener(btnCollect);
-  	    setKeyListener(btnCount);
-  	    setKeyListener(btnDrop);
-            setKeyListener(btnUse);
-            
-            //Add arrow key and ASWD key listener use for key movement 
-  	    setKeyListener(btnMoveEast);
-  	    setKeyListener(btnMoveNorth);
-  	    setKeyListener(btnMoveSouth);
-  	    setKeyListener(btnMoveWest);
-            
-            //Add the key listener in different panel to enable the listener ability
-  	    setKeyListener(listInventory);
-  	    setKeyListener(listObjects);                
-  	    setKeyListener(lblKiwisCounted);
-  	    setKeyListener(lblPredators);
+    public void CustomKeyListener() {
+        setKeyListener(this);
+        pnlIsland.setFocusable(true);
+
+        //Add space_bar key and X,C key listener for Use,collect, Drop and count 
+        setKeyListener(pnlIsland);
+        setKeyListener(btnCollect);
+        setKeyListener(btnCount);
+        setKeyListener(btnDrop);
+        setKeyListener(btnUse);
+
+        //Add arrow key and ASWD key listener use for key movement 
+        setKeyListener(btnMoveEast);
+        setKeyListener(btnMoveNorth);
+        setKeyListener(btnMoveSouth);
+        setKeyListener(btnMoveWest);
+
+        //Add the key listener in different panel to enable the listener ability
+        setKeyListener(listInventory);
+        setKeyListener(listObjects);
+        setKeyListener(lblKiwisCounted);
+        setKeyListener(lblPredators);
 
     }
-    
+
     //implement key event by using KeyListener
-    public void setKeyListener(Component component){   	
-    	component.addKeyListener(new java.awt.event.KeyListener(){
+    public void setKeyListener(Component component) {
+        component.addKeyListener(new java.awt.event.KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
                 int KeyScan = e.getKeyCode();
-                switch(KeyScan){
+                switch (KeyScan) {
                     //↑ and W is moving North
-                    case  KeyEvent.VK_UP:
-                        btnMoveNorth.doClick();                        
+                    case KeyEvent.VK_UP:
+                        btnMoveNorth.doClick();
                         break;
-                    case  KeyEvent.VK_W:
-                        btnMoveNorth.doClick();                        
+                    case KeyEvent.VK_W:
+                        btnMoveNorth.doClick();
                         break;
                     //↓ and S for South
                     case KeyEvent.VK_DOWN:
-                        btnMoveSouth.doClick();                        
+                        btnMoveSouth.doClick();
                         break;
                     case KeyEvent.VK_S:
-                        btnMoveSouth.doClick();                        
+                        btnMoveSouth.doClick();
                         break;
                     //← and A for West
                     case KeyEvent.VK_LEFT:
-                        btnMoveWest.doClick();                        
+                        btnMoveWest.doClick();
                         break;
                     case KeyEvent.VK_A:
-                        btnMoveWest.doClick();                        
+                        btnMoveWest.doClick();
                         break;
                     //→ and D for East
                     case KeyEvent.VK_RIGHT:
-                        btnMoveEast.doClick();                        
+                        btnMoveEast.doClick();
                         break;
-                    case  KeyEvent.VK_D:
-                        btnMoveEast.doClick();                        
+                    case KeyEvent.VK_D:
+                        btnMoveEast.doClick();
                         break;
                     //Space_Bar for Use,Collect and Count
-                    case  KeyEvent.VK_SPACE:
+                    case KeyEvent.VK_SPACE:
                         btnUse.doClick();
                         btnCollect.doClick();
                         btnCount.doClick();
@@ -245,26 +244,30 @@ public class KiwiCountUI
                     //X for Drop Item
                     case KeyEvent.VK_X:
                         btnDrop.doClick();
-                        break;  
+                        break;
                     //ESC key for quit the game
                     case KeyEvent.VK_ESCAPE:
                         dispose();
-                        break;  
-                }                
+                        MainMenu menu = new MainMenu(game);
+                        menu.setVisible(true);
+                        break;
+                }
             }
+
             @Override
             public void keyReleased(KeyEvent e) {
             }
 
             @Override
             public void keyTyped(KeyEvent e) {
-            }        	
-        });   	
+            }
+        });
     }
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -324,7 +327,7 @@ public class KiwiCountUI
         pnlIsland.setLayout(pnlIslandLayout);
         pnlIslandLayout.setHorizontalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 517, Short.MAX_VALUE)
+            .addGap(0, 614, Short.MAX_VALUE)
         );
         pnlIslandLayout.setVerticalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -463,7 +466,8 @@ public class KiwiCountUI
         pnlMovement.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         pnlMovement.setLayout(new java.awt.GridBagLayout());
 
-        btnMoveNorth.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        btnMoveNorth.setBackground(new java.awt.Color(176, 255, 176));
+        btnMoveNorth.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         btnMoveNorth.setText("N");
         btnMoveNorth.setFocusable(false);
         btnMoveNorth.addActionListener(new java.awt.event.ActionListener() {
@@ -480,7 +484,8 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         pnlMovement.add(btnMoveNorth, gridBagConstraints);
 
-        btnMoveSouth.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        btnMoveSouth.setBackground(new java.awt.Color(176, 255, 176));
+        btnMoveSouth.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         btnMoveSouth.setText("S");
         btnMoveSouth.setFocusable(false);
         btnMoveSouth.addActionListener(new java.awt.event.ActionListener() {
@@ -497,7 +502,8 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         pnlMovement.add(btnMoveSouth, gridBagConstraints);
 
-        btnMoveEast.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        btnMoveEast.setBackground(new java.awt.Color(176, 255, 176));
+        btnMoveEast.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         btnMoveEast.setText("E");
         btnMoveEast.setFocusable(false);
         btnMoveEast.addActionListener(new java.awt.event.ActionListener() {
@@ -514,7 +520,8 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         pnlMovement.add(btnMoveEast, gridBagConstraints);
 
-        btnMoveWest.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        btnMoveWest.setBackground(new java.awt.Color(176, 255, 176));
+        btnMoveWest.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         btnMoveWest.setText("W");
         btnMoveWest.setFocusable(false);
         btnMoveWest.addActionListener(new java.awt.event.ActionListener() {
@@ -542,7 +549,8 @@ public class KiwiCountUI
         pnlInventory.setBorder(javax.swing.BorderFactory.createTitledBorder("Inventory"));
         pnlInventory.setLayout(new java.awt.GridBagLayout());
 
-        listInventory.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        listInventory.setBackground(new java.awt.Color(153, 200, 247));
+        listInventory.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         listInventory.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3" };
             public int getSize() { return strings.length; }
@@ -567,6 +575,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlInventory.add(scrlInventory, gridBagConstraints);
 
+        btnDrop.setBackground(new java.awt.Color(176, 255, 176));
         btnDrop.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnDrop.setText("Drop");
         btnDrop.addActionListener(new java.awt.event.ActionListener() {
@@ -584,6 +593,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlInventory.add(btnDrop, gridBagConstraints);
 
+        btnUse.setBackground(new java.awt.Color(176, 255, 176));
         btnUse.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnUse.setText("Use");
         btnUse.addActionListener(new java.awt.event.ActionListener() {
@@ -615,7 +625,8 @@ public class KiwiCountUI
         pnlObjectsLayout.rowHeights = new int[] {0, 5, 0};
         pnlObjects.setLayout(pnlObjectsLayout);
 
-        listObjects.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        listObjects.setBackground(new java.awt.Color(153, 200, 247));
+        listObjects.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         listObjects.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3" };
             public int getSize() { return strings.length; }
@@ -641,6 +652,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlObjects.add(scrlObjects, gridBagConstraints);
 
+        btnCollect.setBackground(new java.awt.Color(176, 255, 176));
         btnCollect.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnCollect.setText("Collect");
         btnCollect.setToolTipText("");
@@ -662,6 +674,7 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlObjects.add(btnCollect, gridBagConstraints);
 
+        btnCount.setBackground(new java.awt.Color(176, 255, 176));
         btnCount.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         btnCount.setText("Count");
         btnCount.addActionListener(new java.awt.event.ActionListener() {
@@ -816,7 +829,7 @@ public class KiwiCountUI
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMoveEastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveEastActionPerformed
-        game.playerMove(MoveDirection.EAST);   
+        game.playerMove(MoveDirection.EAST);
     }//GEN-LAST:event_btnMoveEastActionPerformed
 
     private void btnMoveNorthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNorthActionPerformed
@@ -842,8 +855,7 @@ public class KiwiCountUI
 
     private void listObjectsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listObjectsValueChanged
         Object occ = listObjects.getSelectedValue();
-        if ( occ != null )
-        {
+        if (occ != null) {
             btnCollect.setEnabled(game.canCollect(occ));
             btnCount.setEnabled(game.canCount(occ));
             listObjects.setToolTipText(game.getOccupantDescription(occ));
@@ -851,15 +863,14 @@ public class KiwiCountUI
     }//GEN-LAST:event_listObjectsValueChanged
 
     private void btnUseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUseActionPerformed
-        game.useItem( listInventory.getSelectedValue());
-        
+        game.useItem(listInventory.getSelectedValue());
+
     }//GEN-LAST:event_btnUseActionPerformed
 
     private void listInventoryValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listInventoryValueChanged
-        Object item =  listInventory.getSelectedValue();
+        Object item = listInventory.getSelectedValue();
         btnDrop.setEnabled(true);
-        if ( item != null )
-        {
+        if (item != null) {
             btnUse.setEnabled(game.canUse(item));
             listInventory.setToolTipText(game.getOccupantDescription(item));
         }
@@ -868,60 +879,61 @@ public class KiwiCountUI
     private void btnCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCountActionPerformed
         game.countKiwi();
     }//GEN-LAST:event_btnCountActionPerformed
-    
+
     /**
      * Creates and initialises the island grid.
      */
-    private void initIslandGrid()
-    {
+    private void initIslandGrid() {
         // Add the grid
-        int rows    = game.getNumRows();
+        int rows = game.getNumRows();
         int columns = game.getNumColumns();
         // set up the layout manager for the island grid panel
         pnlIsland.setLayout(new GridLayout(rows, columns));
         // create all the grid square panels and add them to the panel
         // the layout manager of the panel takes care of assigning them to the
         // the right position
-        for ( int row = 0 ; row < rows ; row++ )
-        {
-            for ( int col = 0 ; col < columns ; col++ )
-            {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
                 pnlIsland.add(new GridSquarePanel(game, row, col));
             }
         }
     }
-    
+
     /**
      * Low Stamina Warning
+     *
      * @author Minghao Yang
      */
-    private void lowStaminaWarn(){
-            //Get the current stamina
-            double playerCurrentStamina = game.getPlayer().getStaminaLevel();
-            if(playerCurrentStamina<=50){
-                heatBeatAudio.loop();
-            }else{
-                if(heatBeatAudio!=null){
-            heatBeatAudio.stop();
-                }
-            }   
-    }
-    /**
-     * Change the progPlayerStamina label's foreground color according to the player's stamina
-     * @author Minghao Yang
-     */
-    private void changeStaminaColor(){
-            //Get the current stamina
-            double playerCurrentStamina = game.getPlayer().getStaminaLevel();
-            if(playerCurrentStamina<=100 && playerCurrentStamina>=70){
-            progPlayerStamina.setForeground(new Color(0, 153, 51));
-            }else if(playerCurrentStamina>=40 && playerCurrentStamina<70){
-            progPlayerStamina.setForeground(new Color(255, 153, 51));
-            }else{
-            progPlayerStamina.setForeground(Color.RED);
+    private void lowStaminaWarn() {
+        //Get the current stamina
+        double playerCurrentStamina = game.getPlayer().getStaminaLevel();
+        if (playerCurrentStamina <= 50) {
+            heatBeatAudio.loop();
+        } else {
+            if (heatBeatAudio != null) {
+                heatBeatAudio.stop();
             }
+        }
     }
-    
+
+    /**
+     * Change the progPlayerStamina label's foreground color according to the
+     * player's stamina
+     *
+     * @author Minghao Yang
+     */
+    private void changeStaminaColor() {
+        //Get the current stamina
+        double playerCurrentStamina = game.getPlayer().getStaminaLevel();
+        if (playerCurrentStamina <= 100 && playerCurrentStamina >= 70) {
+            progPlayerStamina.setForeground(new Color(0, 153, 51));
+        } else if (playerCurrentStamina >= 40 && playerCurrentStamina < 70) {
+            progPlayerStamina.setForeground(new Color(255, 153, 51));
+        } else {
+            progPlayerStamina.setForeground(Color.RED);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCollect;
     private javax.swing.JButton btnCount;
@@ -954,29 +966,31 @@ public class KiwiCountUI
     private javax.swing.JLabel txtPredatorsLeft;
     // End of variables declaration//GEN-END:variables
    /**
-    * Set the heart beat sound
-    */
-   public void createHeartBeat(){
-    URL heartBeatUrl = null;
-    URI heartBeatUri;
-    heartBeatUri = heartBeatFile.toURI();
+     * Set the heart beat sound
+     */
+    public void createHeartBeat() {
+        URL heartBeatUrl = null;
+        URI heartBeatUri;
+        heartBeatUri = heartBeatFile.toURI();
         try {
             heartBeatUrl = heartBeatUri.toURL();
         } catch (MalformedURLException ex) {
             Logger.getLogger(KiwiCountUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         heatBeatAudio = Applet.newAudioClip(heartBeatUrl);
-   }
-   /**
-    * Set the timer label
-    * @param text 
-    */
-    public void setTime(String text){
-       this.seconds.setText(text);
-   }
-  
+    }
+
+    /**
+     * Set the timer label
+     *
+     * @param text
+     */
+    public void setTime(String text) {
+        this.seconds.setText(text);
+    }
+
     private final static File heartBeatFile = new File("sound/heartbeat.wav");
-    private  AudioClip heatBeatAudio;
+    private AudioClip heatBeatAudio;
     private Timer timer;
     public Game game;
 }
