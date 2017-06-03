@@ -16,7 +16,7 @@ public class Player
     public static final double MOVE_STAMINA = 1.0;
     
     private Position  position;
-    private final String    name;
+    private String    name;
     private final double    maxStamina;
     private double    stamina;
     private boolean   alive;
@@ -24,6 +24,8 @@ public class Player
     private final double    maxBackpackWeight;
     private final double    maxBackpackSize;   
     private Weather weather = Weather.getSingleTon();
+    private int playerid;
+    private int scroes;
     /**
      * Constructs a new player object.
      * 
@@ -94,7 +96,23 @@ public class Player
     {
        return this.stamina;
     }
-
+    
+    /**
+     * Set the player id
+     * @param playerId 
+     */
+    public void setPlayerId(int playerId){
+        this.playerid = playerId;
+    }
+    
+    
+    /**
+     * Get the player id
+     * @return 
+     */
+    public int getPlayerId(){
+        return playerid;
+    }
 
     /**
      * Returns the amount of stamina needed to move.
@@ -178,6 +196,17 @@ public class Player
         return maxBackpackWeight;
     }
     
+    /**
+     * Set the scores of the player
+     * @param scores 
+     */
+    public void setScores(int scores){
+        this.scroes = scores;
+    }
+    
+    public int getScores(){
+        return scroes;
+    }
         
     /**
      * Checks if the player has a specific item.

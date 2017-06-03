@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class Game
     public Game() 
     {   
         eventListeners = new HashSet<GameEventListener>();
-        this.autoConnectVirtualPetDB();
+        this.autoConnectKiwiIslandDB();
         createNewGame();
     }
     
@@ -520,6 +521,8 @@ public class Game
                 if (!kiwi.counted()) {
                     kiwi.count();
                     kiwiCount++;
+                    //add the scores if the kiwi have been counted
+                    this.player.setScores(this.player.getScores()+10);
                 }
             }
         }
@@ -604,14 +607,18 @@ public class Game
             state = GameState.WON;
             message = "You win! You have done an excellent job and trapped all the predators.";
             this.setWinMessage(message);
+            //if all the predators are trapped, the player will get 550 scores
+            this.player.setScores(this.player.getScores()+550-(StepCounter.getSingleTon().getStep()*2));
         }
         else if(kiwiCount == totalKiwis)
-        {
+        {   
             if(predatorsTrapped >= totalPredators * MIN_REQUIRED_CATCH)
             {
                 state = GameState.WON;
                 message = "You win! You have counted all the kiwi and trapped at least 80% of the predators.";
                 this.setWinMessage(message);
+                  //if all the kiwis have been counted and the trapped predators over the minimum required catch number, get 500 scores
+                this.player.setScores(this.player.getScores()+500-(StepCounter.getSingleTon().getStep()*2));
             }
         }
         // notify listeners about changes
@@ -646,6 +653,25 @@ public class Game
         playerMessage = message;
         
     }
+    
+    /**
+     * Get the current player's name
+     * @return 
+     */
+    public String getCurrentPlayerName() {
+        return currentPlayerName;
+    }
+    
+    /**
+     * Set the current player's name
+     * @param currentPlayerName 
+     */
+    public void setCurrentPlayerName(String currentPlayerName) {
+        this.currentPlayerName = currentPlayerName;
+    }
+    
+    
+    
     /**
      * Check if player able to move
      * @return true if player can move
@@ -671,6 +697,8 @@ public class Game
             //Predator has been trapped so remove
             island.removeOccupant(current, occupant); 
             predatorsTrapped++;
+            //add the scores if the preadtor has been trapped
+            this.player.setScores(this.player.getScores()+10);
         }
         
         return hadPredator;
@@ -822,8 +850,6 @@ public class Game
     {   
             //Get Player Informaiton
             Element playerE = root.element("player");
-            //Get the name of player
-            String playerName = playerE.attributeValue("name");
             //Get the player's initial position
             //Get the row of the positon
             int playerPosRow = Integer.parseInt(playerE.element("posRow").getTextTrim());
@@ -837,8 +863,9 @@ public class Game
             double playerMaxBackpackSize = Double.parseDouble(playerE.element("maxBackpackSize").getTextTrim());
 
              Position pos = new Position(island, playerPosRow, playerPosCol);
-             player = new Player(pos, playerName, playerMaxStamina, 
+             player = new Player(pos,this.currentPlayerName ,playerMaxStamina, 
              playerMaxBackpackWeight, playerMaxBackpackSize);
+             
              island.updatePlayerPosition(player);
     }
 
@@ -852,7 +879,6 @@ public class Game
             Occupant occupant = null;
             //Get the number of total items
             int itemNum = Integer.parseInt(root.element("occupants").element("itemNum").getTextTrim());
-            System.out.println(itemNum);
             String occupants = root.element("occupants").getTextTrim();
             //Split the string according to the ";" symbol
             String[] occArr = occupants.split(";");
@@ -928,6 +954,12 @@ public class Game
             }
 
     }  
+    /**
+     * Log in
+     * @param userName
+     * @param password
+     * @return 
+     */
      public String login(String userName,String password){
          String messageTxt = "";
          try {
@@ -947,7 +979,12 @@ public class Game
         }
          return messageTxt;
     }
-    
+    /**
+     * Register a  new account
+     * @param userName
+     * @param password
+     * @return 
+     */
     public String register(String userName,String password){
         Boolean accountExist = null;
         ResultSet rs = null;
@@ -972,12 +1009,18 @@ public class Game
         return messageString;
     }
     
-    public void autoConnectVirtualPetDB(){
+    /**
+     * Auto connect to the kiwi island database
+     */
+    public void autoConnectKiwiIslandDB(){
         try {
             conn = DriverManager.getConnection(url, username, password);
             statement = conn.createStatement();
             if(checkTableExisting("PLAYER")){
             statement.executeUpdate("CREATE TABLE PLAYER(PLAYERID INT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY (START WITH 1, INCREMENT BY 1),PLAYERNAME VARCHAR(30) NOT NULL,PASSWORD VARCHAR(20) NOT NULL)");//Create the player table
+            }
+            if(checkTableExisting("RANKBOARD")){
+            statement.executeUpdate("CREATE TABLE RANKBOARD(RANKID INT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY (START WITH 1, INCREMENT BY 1),PLAYERNAME VARCHAR(30) NOT NULL, SCORES INT NOT NULL)");
             }
         } catch (SQLException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -1015,6 +1058,48 @@ public class Game
             return flag;
         }
     }
+    /**
+     * Save the scores
+     */
+    public void saveScores(){
+        try {
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("INSERT INTO RANKBOARD (PLAYERNAME,SCORES) VALUES ('"+this.getCurrentPlayerName()+"',"+this.player.getScores()+")");
+        } catch (SQLException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    /**
+     * Read the rank data
+     */
+    public ArrayList rankScores(){
+        ArrayList<String> rankList = new ArrayList<String>();
+        ArrayList<String> resultList = new ArrayList<String>(10);
+        try {
+            Statement statement = conn.createStatement();
+            rs = statement.executeQuery("SELECT * FROM RANKBOARD");
+            while(rs.next()){
+                rankList.add(rs.getString("PLAYERNAME")+";"+rs.getInt("SCORES"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        /* Sort the rank list */
+        for (int i = 0; i < rankList.size(); i++) {
+            for (int j = 0; j < rankList.size()-1; j++) {
+               if(Integer.parseInt(rankList.get(j).split(";")[1])<Integer.parseInt(rankList.get(j+1).split(";")[1])){
+                   String temp = rankList.get(j);
+                   rankList.set(j,rankList.get(j+1));
+                   rankList.set(j+1,temp);
+               }
+            } 
+        }
+        /* Put the values in the result list */
+        for (int i = 0; i < (rankList.size()>10 ? 10 : rankList.size()); i++) {
+            resultList.add("     No:"+(i+1)+"     Player:"+rankList.get(i).split(";")[0]+"      Scores:"+rankList.get(i).split(";")[1]);            
+        }
+        return resultList;
+    }
 
     private Island island;
     private Player player;
@@ -1031,12 +1116,12 @@ public class Game
     
 
     private Connection conn = null;
-    private String url = "jdbc:derby://localhost:1527/kiwiIslandDB;create=true";//url of the DB host
-    
+    private String url = "jdbc:derby:kiwiIslandDB;create=true";//url of the DB host
     private String username = "groupmj2";  //your DB username
     private String password = "123123";   //your DB password
     private Statement statement;
     private ResultSet rs;
+    private String currentPlayerName;
 
 
 }
