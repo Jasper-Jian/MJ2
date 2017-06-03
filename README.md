@@ -1,10 +1,11 @@
 # MJ
 -----------------------------------------------------------------------
+
 PROJECT TITLE: Kiwi Island
 
 PURPOSE OF PROJECT: Programming Assignment
 
-VERSION or DATE: Version 4.0, 03/06/2017
+VERSION or DATE: Version 4.0, 04/06/2017
 
 AUTHORS: AS Mike, Jack, Zhipei, Manfei
 
@@ -12,6 +13,7 @@ For the project run will need to start the databse server first and import all t
 
 Version 3.0
 
+------------------------------------------
 
 Feature added:
 
@@ -27,9 +29,11 @@ HP bar colour changing affect added.
 
 Ocupant UI added.
 
+==========================================================
 
 Version 4.0
 
+=============================================================
 
 In the Next Version feature we will add:
 
@@ -41,3 +45,4 @@ Main Menu,
 
 Score Board.
 
+===========================================================
