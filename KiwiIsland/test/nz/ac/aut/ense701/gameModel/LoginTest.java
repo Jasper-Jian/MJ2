@@ -39,7 +39,10 @@ public class LoginTest {
           
       }
         @Then("^Login Fail")
-      public void loginFail() throws Throwable{     
+      public void loginFail() throws Throwable{    
+        Game game = new Game();
+        expect=game.login(username, password);   
+        System.out.println(expect);
         System.out.println("Login Fail"); 
       }
 }

@@ -4,11 +4,11 @@ Feature: Register
 Scenario: Register Successed
     Given input register username: "1234"
     And input register password: "123"
-    When Click at Login button
-    Then Login Success
+    When Click at Register button
+    Then Register Success
 
   Scenario: Register Failed
     Given input register username: "123"
     And input register password: "123"
-    When Click at Login button
-    Then Login Fail
+    When Click at Register button
+    Then Register Fail

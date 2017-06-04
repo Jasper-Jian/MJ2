@@ -44,6 +44,8 @@ public class RegisterTest {
       }
     @Then("^Register Fail")
       public void Register_Failed() throws Throwable{     
+        Game game = new Game();    
+        expect= game.register(username, password);
         System.out.println("Register Fail"); 
       }
 }
