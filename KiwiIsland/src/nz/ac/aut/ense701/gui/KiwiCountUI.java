@@ -86,9 +86,11 @@ public class KiwiCountUI
             seconds.setText("00m:00s");
             //Reset the timer
             timer.setProgramStart(System.currentTimeMillis());
-
             game.createNewGame();
         } else if (game.getState() == GameState.WON) {
+            int minute = Integer.parseInt(this.seconds.getText().substring(0, 2));
+            //Decrease the scores according to the time
+            this.game.getPlayer().setScores(this.game.getPlayer().getScores()-minute*50);
             JOptionPane.showMessageDialog(
                     this,
                     "You have got " + this.game.getPlayer().getScores() + " scores.", "SCORES",
@@ -915,6 +917,8 @@ public class KiwiCountUI
             }
         }
     }
+    
+    
 
     /**
      * Change the progPlayerStamina label's foreground color according to the
@@ -989,8 +993,10 @@ public class KiwiCountUI
         this.seconds.setText(text);
     }
 
+    
     private final static File heartBeatFile = new File("sound/heartbeat.wav");
     private AudioClip heatBeatAudio;
     private Timer timer;
     public Game game;
+
 }
