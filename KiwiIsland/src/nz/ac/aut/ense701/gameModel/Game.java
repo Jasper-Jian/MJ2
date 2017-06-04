@@ -594,12 +594,14 @@ public class Game
         {
             state = GameState.LOST;
             message = "Sorry, you have lost the game. " + this.getLoseMessage();
+            this.player.setScores(this.player.getScores()-StepCounter.getSingleTon().getStep());
             this.setLoseMessage(message);
         }
         else if (!playerCanMove() )
         {
             state = GameState.LOST;
             message = "Sorry, you have lost the game. You do not have sufficient stamina to move.";
+            this.player.setScores(this.player.getScores()-StepCounter.getSingleTon().getStep());
             this.setLoseMessage(message);
         }
         else if(predatorsTrapped == totalPredators)
@@ -850,6 +852,8 @@ public class Game
     {   
             //Get Player Informaiton
             Element playerE = root.element("player");
+            //Get the name of player
+            String playerName = playerE.attributeValue("name");
             //Get the player's initial position
             //Get the row of the positon
             int playerPosRow = Integer.parseInt(playerE.element("posRow").getTextTrim());
@@ -863,7 +867,7 @@ public class Game
             double playerMaxBackpackSize = Double.parseDouble(playerE.element("maxBackpackSize").getTextTrim());
 
              Position pos = new Position(island, playerPosRow, playerPosCol);
-             player = new Player(pos,this.currentPlayerName ,playerMaxStamina, 
+             player = new Player(pos,playerName ,playerMaxStamina, 
              playerMaxBackpackWeight, playerMaxBackpackSize);
              
              island.updatePlayerPosition(player);
@@ -873,7 +877,6 @@ public class Game
      * Creates occupants listed in the file and adds them to the island.
      * @param root data from the xml file
      */
-   
     private void setUpOccupants(Element root) 
     {     
             Occupant occupant = null;
@@ -980,7 +983,7 @@ public class Game
          return messageTxt;
     }
     /**
-     * Register a  new account
+     * Register a new account
      * @param userName
      * @param password
      * @return 
